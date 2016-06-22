@@ -221,6 +221,7 @@
 			table+="<thead>"+
 						"<tr>"+
 						"<th class='sort-alpha'>MAIN PROGRAM</th>"+
+						"<th class='sort-numeric'>NUMBER OF SUB-PROGRAM</th>"+
 						"<th class='sort-numeric'>BRANCH</th>"+
 						"<th>ACTION</th>"+
 					"</tr>"+
@@ -229,6 +230,7 @@
 			for(var i=0;i<data.length;i++){
 				table+= "<tr>"+
 							"<td>"+data[i].prog_title+"</td>"+
+							"<td><span class='badge style-accent-light'>"+data[i].num_subprog+"</span></td>"+
 							"<td><span class='badge' style='background-color:"+data[i].br_color+"'>"+data[i].branch_name+"</span></td>"+
 							"<td>";
 							table+="<span data-toggle='modal' data-target='.open-modal' data-backdrop='static' data-keyboard='false'>"+

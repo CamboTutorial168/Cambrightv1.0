@@ -3,7 +3,9 @@ package model.dto;
 public class ListStudInfoDTO extends StudentDTO {
 	private String reg_by;
 	private String level;
+	private String cla_id;
 	private String cla_num;
+	private String cla_color;
 	private String teach_by;
 	private String branch_name;
 	public String getReg_by() {
@@ -37,6 +39,18 @@ public class ListStudInfoDTO extends StudentDTO {
 		this.branch_name = branch_name;
 	}
 	
+	public String getCla_color() {
+		return cla_color;
+	}
+	public void setCla_color(String cla_color) {
+		this.cla_color = cla_color;
+	}
+	public String getCla_id() {
+		return cla_id;
+	}
+	public void setCla_id(String cla_id) {
+		this.cla_id = cla_id;
+	}
 	@Override
 	public String toString() {
 		return "ListStudInfoDTO [reg_by=" + reg_by + ", level=" + level

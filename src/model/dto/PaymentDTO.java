@@ -56,8 +56,15 @@ public class PaymentDTO {
 	
 	private String paid_student_id;
 	private String subprog_id;
+	private String subprog_title;
 	private String expired;
 	private String total;
+	public String getSubprog_title() {
+		return subprog_title;
+	}
+	public void setSubprog_title(String subprog_title) {
+		this.subprog_title = subprog_title;
+	}
 	@Override
 	public String toString() {
 		return "PaymentDTO [pay_id=" + pay_id + ", fee_type=" + fee_type

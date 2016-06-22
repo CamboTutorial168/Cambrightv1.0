@@ -274,7 +274,7 @@
         	   	   					alertify.logPosition("bottom right");
         	   						if(status=="true"){
         	   							alertify.success("PAID SUCCESSFULLY !");
-        	   							//listStudInfo();
+        	   							listBranch();
         	   	 						reset();
         	   	        			}else{
         	   							swal("FALIED","Unable to Create Payment","error");
@@ -383,6 +383,7 @@
     			});
     		 }
             function subProgList_Supply(data){
+            	//console.log(data);
            	 var list = "";
      			for (var i = 0; i < data.length; i++) {
      				list += "<option value="+data[i].sub_prog_id+">"
@@ -416,12 +417,13 @@
    	     var clinB=classInBranch(data);
    	     var tinB= teachInBranch(listTeaching);
    	     var cAval = classAvaliable(tinB,clinB);
-   	    	
-   	     // console.log(cAval);
+   	     console.log(cAval);
           	 var list = "";
     		 var lent=cAval.length;
      			 list+="<optgroup label='Classroom'>";
      			for (var i = 0; i < lent; i++) {
+     				alert(cAval[i]['branch_id']==$("#branch-list").val());
+     				if(cAval[i]['branch_id']==$("#branch-list").val())
      				list += "<option value="+cAval[i].teach_id+">"
    			 		 + cAval[i].class_name +"</option>";
      			}
@@ -456,8 +458,6 @@
    	     
    	    //Find avaliable class after filter in one branch
            function classAvaliable(tinB,clinB){
-        	  /*  console.log(tinB);
-      	    	console.log(clinB); */
 	           	 var result1=[],result2=[];
 	           	 var tmp=null;
 	           	 //Combine teach & class to find unique
@@ -508,7 +508,6 @@
             });
             $("#select-feetype").on("change",function(){
            	    getFee();
-           	    $("#select-subprog").val();
             });
             $("#discount").on("change keypress keyup",function(){
            	 if(raw_price>-1){
@@ -517,7 +516,6 @@
            	 }
             });
             function getFee(){
-            	console.log(listsubprog);
 	           	 for(var i=0;i<listsubprog.length;i++){
 	           		 if(listsubprog[i]['sub_prog_id']==$("#select-subprog").val()){
 	           			 $("#total").val(listsubprog[i][$("#select-feetype").val()]).change();

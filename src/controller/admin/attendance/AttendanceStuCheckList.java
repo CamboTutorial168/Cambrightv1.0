@@ -1,4 +1,4 @@
-package controller.admin.main.program;
+package controller.admin.attendance;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -9,37 +9,40 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import model.dao.ProgramDAO;
-import model.dto.UserDTO;
+import com.google.gson.Gson;
+
+import model.dao.AttendanceStuDAO;
+import model.dto.AttendantStuDTO;
 
 /**
- * Servlet implementation class ProgMainList
+ * Servlet implementation class AttendanceStuCheckList
  */
-@WebServlet("/ProgMainList")
-public class ProgMainList extends HttpServlet {
+@WebServlet(name = "AttendanceStudCheckList", urlPatterns = { "/AttendanceStudCheckList" })
+public class AttendanceStuCheckList extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
     /**
      * @see HttpServlet#HttpServlet()
      */
-    public ProgMainList() {
+    public AttendanceStuCheckList() {
         super();
         // TODO Auto-generated constructor stub
     }
 
-	
 	/**
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		try{
-			String branch_id=((UserDTO)(request.getSession().getAttribute("adminsession"))).getBranch_id();
-			int user_level=((UserDTO)(request.getSession().getAttribute("adminsession"))).getUser_level();
-			ArrayList<String> list=new ProgramDAO().getListMain(branch_id,user_level);
+		try {
+			String month = request.getParameter("date");
+			ArrayList<AttendantStuDTO> list = new AttendanceStuDAO().getListStuCheckAttendant(month);
 			response.setContentType("application/json");
 			response.setCharacterEncoding("UTF-8");
-			response.getWriter().write(list.toString().replaceAll("'", "\""));
-		}catch(Exception e){e.printStackTrace();}
+			String json=new Gson().toJson(list);
+			response.getWriter().write(json);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 }

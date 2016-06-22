@@ -50,7 +50,7 @@ public class ProgramDAO {
 	public ArrayList<String> getListMain(String branch_id, int user_level) throws SQLException{
 		ArrayList<String> list=new ArrayList<>();
 		try{
-			String sql="SELECT * FROM tb_programs pr"
+			String sql="SELECT *,(SELECT COUNT(*) FROM tb_sub_programs sub WHERE sub.prog_id=p.prog_id AND sub.is_deleted='f') as num_subprog FROM tb_programs pr"
 					+ " JOIN tb_branches br"
 					+ " ON pr.branch_id =br.branch_id"
 					+ " WHERE br.status='t' AND is_deleted='f';";
@@ -61,6 +61,7 @@ public class ProgramDAO {
 				list.add("'prog_title':"+"'"+rs.getString("prog_title")+"'");
 				list.add("'branch_id':"+"'"+rs.getString("branch_id")+"'");
 				list.add("'branch_name':"+"'"+rs.getString("branch_name")+"'");
+				list.add("'num_subprog':"+"'"+rs.getString("num_subprog")+"'");
 				list.add("'br_color':"+"'"+rs.getString("color")+"'}");
 			}
 		}catch(Exception e){e.printStackTrace();}

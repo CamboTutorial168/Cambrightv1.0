@@ -140,17 +140,37 @@ public class StudentDAO {
 	/*
 	 * checked
 	 */
-	public ArrayList<ListStudInfoDTO> listStudInfo(String branch, int user_type) throws SQLException{
+	public ArrayList<ListStudInfoDTO> listStudInfo(String branch_id) throws SQLException{
 		ArrayList<ListStudInfoDTO> list=new ArrayList<>();
 		String sql=null;
-		
 		try{
-			sql="SELECT *,e.english_name as registered  FROM tb_students s"
+			/*sql="SELECT *,e.english_name as registered  FROM tb_students s"
 					+ " JOIN tb_branches b"
 					+ " ON s.branch_id=b.branch_id"
 					+ " JOIN tb_users_level u"
-					+ " ON u.user_id=s.user_id JOIN tb_employees e ON e.emp_id = s.registered_by WHERE b.status='t'";
+					+ " ON u.user_id=s.user_id JOIN tb_employees e ON e.emp_id = s.registered_by WHERE b.status='t'";*/
+			sql="SELECT	s.*,u.*, e.english_name AS registered,sub.sub_prog_id,sub.sub_prog_title,cl.class_color,cl.class_id,cl.class_title,per.period_type,b.branch_id,b.color,b.branch_name"
+					+ " FROM tb_students s"
+					+ " JOIN tb_branches b"
+					+ " ON s.branch_id = b.branch_id"
+					+ " JOIN tb_users_level u"
+					+ " ON u.user_id = s.user_id"
+					+ " JOIN tb_employees e"
+					+ " ON e.emp_id = s.registered_by"
+					+ " JOIN tb_period per"
+					+ " ON per.student_id = s.student_id"
+					+ " JOIN tb_studying std"
+					+ " ON std.student_id=s.student_id"
+					+ " JOIN tb_teaching te"
+					+ " ON te.teach_id=std.teach_id"
+					+ " JOIN tb_classes cl"
+					+ " ON cl.class_id=te.class_id"
+					+ " JOIN tb_sub_programs sub"
+					+ " ON sub.sub_prog_id=cl.sub_prog_id"
+					+ " WHERE b.status = 't' AND per.status='t' AND std.status='t' AND te.status='t' AND te.is_deleted='f' AND sub.is_deleted='f' ";
+			if(branch_id!=null)sql+=" AND b.branch_id=?::uuid;";
 			pst=con.prepareStatement(sql);
+			if(branch_id!=null)pst.setString(1, branch_id);
 			ResultSet rs=pst.executeQuery();
 			while(rs.next()){
 				ListStudInfoDTO info=new ListStudInfoDTO();
@@ -174,11 +194,17 @@ public class StudentDAO {
 				info.setUser_type(rs.getString("user_type"));
 				info.setBranch_id(rs.getString("branch_id"));
 				info.setBranch_name(rs.getString("branch_name"));
-				
+				info.setSubprog_title(rs.getString("sub_prog_title"));
+				info.setCla_num(rs.getString("class_title"));
+				info.setCla_color(rs.getString("class_color"));
+				info.setPeriod(rs.getString("period_type"));
+				info.setBranch_color(rs.getString("color"));
+				info.setSubprog_id(rs.getString("sub_prog_id"));
+				info.setCla_id(rs.getString("class_id"));
 				list.add(info);
 			}
 			
-		}catch(Exception e){e.printStackTrace();return null;}
+		}catch(Exception e){e.printStackTrace();}
 		finally{
 			pst.close();
 			if(con !=null )

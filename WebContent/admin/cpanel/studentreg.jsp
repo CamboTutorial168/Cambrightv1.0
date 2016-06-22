@@ -473,7 +473,32 @@ table.dataTable span.highlight {
 															</div>
 														</div>
 													</div>
+													<div class="row">
+														<div class="col-sm-6">
+															<div class="form-group floating-label">
+																<input type="text" class="form-control static dirty"
+																	id="class-view" readonly=""> <label
+																	for="class-view">CLASS</label>
+															</div>
+														</div>
+														<div class="col-sm-6">
+															<div class="form-group floating-label">
+																<input type="text" class="form-control static dirty"
+																	id="program-view" readonly=""> <label
+																	for="program-view">STUDYING PROGRAM</label>
+															</div>
+														</div>
+													</div>
 													<!--end .row -->
+													<div class="row">
+														<div class="col-sm-6">
+															<div class="form-group floating-label">
+																<input type="text" class="form-control static dirty"
+																	id="period-view" readonly=""> <label
+																	for="period-view">PERIOD</label>
+															</div>
+														</div>
+													</div>
 												</div>
 												<!--end .tab-pane -->
 
@@ -531,6 +556,7 @@ table.dataTable span.highlight {
 	<!-- MAIN SCRIPT -->
 	<script
 		src="${pageContext.servletContext.contextPath }/assets/js/core/source/App.js"></script>
+	<script src="${pageContext.servletContext.contextPath }/assets/js/core/source/AppVendor.js"></script>
 	<script
 		src="${pageContext.servletContext.contextPath }/assets/js/core/source/AppNavigation.js"></script>
 	<script
@@ -695,7 +721,7 @@ table.dataTable span.highlight {
 	  					$("#loading").remove();
 	  				},
 	  				success:function(data){
-	  					
+	  					console.log(data);
 	  					$("#list").html(listStudInfo_Supply(data));
 	  					callJTable();
 	  				},
@@ -714,8 +740,10 @@ table.dataTable span.highlight {
 								"<th class='sort-alpha'>ENG NAME</th>"+
 								"<th>GENDER</th>"+
 								"<th>DOB</th>"+
+								"<th>BRANCH</th>"+
+								"<th>PROGRAM</th>"+
+								"<th>CLASS</th>"+
 								"<th>ACTION</th>"+
-								"<th class='hidden'></th>"+
 								"<th class='hidden'></th>"+
 								"<th class='hidden'></th>"+
 								"<th class='hidden'></th>"+
@@ -732,19 +760,20 @@ table.dataTable span.highlight {
 										"<td>"+data[i]['en_name']+"</td>"+
 										"<td>"+data[i]['gender']+"</td>"+
 										"<td>"+data[i]['dob']+"</td>"+
+										"<td><span class='badge' style='background-color:"+data[i]['branch_color']+"'>"+data[i]['branch_name']+"</span></td>"+
+										"<td>"+data[i]['subprog_title']+"</td>"+
+										"<td><span class='badge' style='background-color:"+data[i]['cla_color']+"'>"+data[i]['cla_num']+"</span></td>"+
 										"<td class='hidden'>"+data[i]['phone']+"</td>"+
 										"<td class='hidden'>"+data[i]['fa_name']+"</td>"+
 										"<td class='hidden'>"+data[i]['ma_name']+"</td>"+
 										"<td class='hidden'>"+data[i]['addr']+"</td>"+
-										"<td class='hidden'>"+data[i]['branch_name']+"</td>"+
-
 										"<td>";
 										 if(data[i]['status']=='t'){
 											table+= "<button type='button' onClick=\"checkStatus('"+data[i].student_id+"','f')\" class='btn ink-reaction btn-floating-action btn-xs btn-info' data-toggle='tooltip' data-placement='top' title='Status'><i class='fa fa-check'></i></button>";
 										 }else{
 											 table+= "<button type='button' onClick=\"checkStatus('"+data[i].student_id+"','t')\" class='btn ink-reaction btn-floating-action btn-xs btn-danger' data-toggle='tooltip' data-placement='top' title='Status'><i class='fa fa-close'></i></button>";
 										 }
-										 table+="<span data-toggle='modal' onClick=\"view('"+data[i].id_card+"','"+data[i].en_name+"','"+data[i].kh_name+"','"+data[i].gender+"','"+data[i].dob+"','"+data[i].fa_name+"','"+data[i].ma_name+"','"+data[i].addr+"','"+data[i].img_url+"','"+data[i].reg_date+"','"+data[i].mod_date+"','"+data[i].status+"','"+data[i].phone+"','"+data[i].branch_name+"','"+data[i].reg_by+"','"+data[i].cla_num+"','"+data[i].level+"','"+data[i].teach_by+"','"+data[i].user_type+"')\" data-target='.bs-example-modal-md' data-backdrop='static' data-keyboard='false'><button type='button' class='btn ink-reaction btn-floating-action btn-xs btn-default-dark' data-toggle='tooltip'  data-placement='top' title='View Detail'><a class='screenshot' rel='${pageContext.servletContext.contextPath }/admin/cpanel/img/stud/"+data[i].img_url+"'><i class='md md-remove-red-eye'></i></a></button></span>"+
+										 table+="<span data-toggle='modal' onClick=\"view('"+data[i].id_card+"','"+data[i].en_name+"','"+data[i].kh_name+"','"+data[i].gender+"','"+data[i].dob+"','"+data[i].fa_name+"','"+data[i].ma_name+"','"+data[i].addr+"','"+data[i].img_url+"','"+data[i].reg_date+"','"+data[i].mod_date+"','"+data[i].status+"','"+data[i].phone+"','"+data[i].branch_name+"','"+data[i].reg_by+"','"+data[i].cla_num+"','"+data[i].level+"','"+data[i].teach_by+"','"+data[i].user_type+"','"+data[i].cla_num+"','"+data[i].period+"','"+data[i].subprog_title+"')\" data-target='.bs-example-modal-md' data-backdrop='static' data-keyboard='false'><button type='button' class='btn ink-reaction btn-floating-action btn-xs btn-default-dark' data-toggle='tooltip'  data-placement='top' title='View Detail'><a class='screenshot' rel='${pageContext.servletContext.contextPath }/admin/cpanel/img/stud/"+data[i].img_url+"'><i class='md md-remove-red-eye'></i></a></button></span>"+
 										 "<button type='button' onClick=\"edit('"+data[i].id_card+"','"+data[i].en_name+"','"+data[i].kh_name+"','"+data[i].gender+"','"+data[i].dob+"','"+data[i].fa_name+"','"+data[i].ma_name+"','"+data[i].addr+"','"+data[i].img_url+"','"+data[i].phone+"','"+data[i].password+"','"+data[i].student_id+"','"+data[i].branch_id+"','"+data[i].user_id+"')\" class='btn ink-reaction btn-floating-action btn-xs btn-warning' data-toggle='tooltip' data-placement='top' title='Edit'><i class='fa fa-edit'></i></button>"+
 										"</td>"+
 									"</tr>";
@@ -1097,7 +1126,7 @@ table.dataTable span.highlight {
          });
          
          function view(id_card,eng_name,kh_name,gender,dob,fa_name,ma_name,addr,img_url,
-        		 reg_date,mod_date,status,phone,branch_name,reg_by,cla_num,level,teach_by,user_type){
+        		 reg_date,mod_date,status,phone,branch_name,reg_by,cla_num,level,teach_by,user_type,cla_num,period,subprog_title){
         	 var sex;
         	 (gender=='F')? sex="Female":sex="Male";
         	 $("h4.text-bold").text(id_card);
@@ -1118,7 +1147,11 @@ table.dataTable span.highlight {
         	 $("#level-view").val(level);
         	 $("#reg-by-view").val(reg_by);
         	 $("#userlvl-view").val(user_type);
+        	 $("#class-view").val(cla_num);
+        	 $("#period-view").val(period);
+        	 $("#program-view").val(subprog_title);
          }
+     
          
          function edit(id_card,en_name,kh_name,gender,dob,fa_name,ma_name,addr,img_url,
         		 phone,pwd,student_id,branch_id,user_id){

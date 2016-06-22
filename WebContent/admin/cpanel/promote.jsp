@@ -246,7 +246,7 @@
        				 showCancelButton: true,   
        				 confirmButtonColor: "#DD6B55",   
        				 confirmButtonText: "Yes, I am!",   
-       				 closeOnConfirm: false 
+       				 closeOnConfirm: false
        	   		    }, function(){
 	       	   		  $.ajax({
 	     	   				url:"promote_class",

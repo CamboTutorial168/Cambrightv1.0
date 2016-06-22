@@ -19,7 +19,7 @@
 						<a
 							href="${pageContext.servletContext.contextPath }/admin/cpanel/dashboard">
 							<img alt=""
-							src="${pageContext.servletContext.contextPath }/assets/img/user.png"
+							src="${pageContext.servletContext.contextPath }/assets/img/logo.png"
 							class="img-round"> <span
 							class="text-lg text-bold text-primary">CAMBRIGHT</span>
 						</a>

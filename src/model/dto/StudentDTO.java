@@ -22,6 +22,7 @@ public class StudentDTO extends PaymentDTO{
 	private String user_id;
 	private String user_type;
 	private String branch_id;
+	private String branch_color;
 	private String mod_by;
 	private String teach_id;
 	private String period;
@@ -104,6 +105,12 @@ public class StudentDTO extends PaymentDTO{
 	}
 	public void setMod_date(String mod_date) {
 		this.mod_date = mod_date;
+	}
+	public String getBranch_color() {
+		return branch_color;
+	}
+	public void setBranch_color(String branch_color) {
+		this.branch_color = branch_color;
 	}
 	public String getImg_url() {
 		return img_url;

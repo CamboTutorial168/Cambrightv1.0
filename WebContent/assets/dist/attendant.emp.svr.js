@@ -75,7 +75,6 @@ function getPeople(people){
 			date:dateinControl
 		},
 		success:function(cklist){
-			
 			$("#list-emp").html(getEmpSupply(people,cklist));
 			
 		}
@@ -85,6 +84,8 @@ function getPeople(people){
 }
 
 function getEmpSupply(people,cklist){
+	console.log(people);
+	console.log(cklist);
 	$("#ck-att").attr("disabled",true);
 	var dateNow=yearNow+"/"+(monthNow+1)+"/1";
 	var token=($('#control-date').val()).split("/");
