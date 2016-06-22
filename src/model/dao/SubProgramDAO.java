@@ -52,7 +52,7 @@ public class SubProgramDAO {
 		String sql="";
 		
 		try{
-			sql="SELECT br.*,sub.* FROM tb_sub_programs sub"
+			sql="SELECT br.*,sub.*,pro.* FROM tb_sub_programs sub"
 					+ " JOIN tb_programs pro"
 					+ " ON sub.prog_id=pro.prog_id"
 					+ " JOIN tb_branches br"
@@ -67,6 +67,7 @@ public class SubProgramDAO {
 				l.setSubprog_id(rs.getString("sub_prog_id"));
 				l.setSub_prog_title(rs.getString("sub_prog_title"));
 				l.setProg_id(rs.getString("prog_id"));
+				l.setProg_title(rs.getString("prog_title"));
 				l.setTerm_fee(rs.getString("term_fee"));
 				l.setSem_fee(rs.getString("sem_fee"));
 				l.setYear_fee(rs.getString("year_fee"));

@@ -32,7 +32,7 @@
 <link type="text/css" rel="stylesheet"
 	href="${pageContext.servletContext.contextPath }/assets/dist/sweetalert2.css">
 <link type="text/css" rel="stylesheet"
-	href="${pageContext.servletContext.contextPath }/assets/dist/alertify.css" />
+	href="${pageContext.servletContext.contextPath }/assets/css/theme-default/libs/select2/select2.css" />
 
 <style type="text/css">
 .holiday {
@@ -94,39 +94,34 @@
 													</div>
 												</div>
 											</div>
-											<c:if test="${adminsession.user_level!=3}">
-												<div class="col-md-2">
-													<div class="form-group floating-label">
-														<select class="form-control" id="branch-list">
-
-														</select> <label>BRANCH</label>
-													</div>
-												</div>
-												<div class="col-md-3">
-													<div class="form-group floating-label">
-														<select class="form-control" id="list-main-prog">
-
-														</select> <label>PROGRAM TYPE</label>
-													</div>
-												</div>
-											</c:if>
 											<div class="col-md-2">
 												<div class="form-group floating-label">
-													<select class="form-control" id="list-lv">
+													<select name="branch" id="branch-list" class="form-control"
+														required>
 
-													</select> <label>LEVEL</label>
+													</select> <label for="branch">BRANCH</label>
+												</div>
+											</div>
+											<div class="col-md-3">
+												<div class="form-group floating-label">
+													<select class='form-control select2-list'
+														id='select-subprog' placeholder="SELECT SUB-PROGRAM"
+														required>
+
+													</select>
+												</div>
+											</div>
+											<div class="col-md-2">
+												<div class="form-group floating-label">
+													<select class='form-control select2-list' id='select-class'
+														placeholder="SELECT CLASS" required>
+
+													</select>
 												</div>
 											</div>
 											<div class="col-md-1">
 												<div class="form-group floating-label">
-													<select class="form-control" id="list-class">
-														<option></option>
-													</select> <label>CLASS</label>
-												</div>
-											</div>
-											<div class="col-md-1">
-												<div class="form-group floating-label">
-													<select class="form-control" id="ampm">
+													<select class="form-control" id="select-period">
 														<option value="am">AM</option>
 														<option value="pm">PM</option>
 													</select> <label>PERIOD</label>
@@ -176,10 +171,7 @@
 	<!-- END BASE -->
 
 	<!-- MAIN SCRIPT -->
-	<script
-		src="${pageContext.servletContext.contextPath }/assets/js/libs/jquery/jquery-1.11.2.min.js"></script>
-	<script
-		src="${pageContext.servletContext.contextPath }/assets/js/libs/bootstrap/bootstrap.min.js"></script>
+	
 	<script
 		src="${pageContext.servletContext.contextPath }/assets/js/core/source/App.js"></script>
 	<script
@@ -193,6 +185,8 @@
 		src="${pageContext.servletContext.contextPath }/assets/js/libs/bootstrap-datepicker/bootstrap-datepicker.js"></script>
 	<script
 		src="${pageContext.servletContext.contextPath }/assets/dist/sweetalert2.min.js"></script>
+	<script
+		src="${pageContext.servletContext.contextPath }/assets/js/libs/select2/select2.min.js"></script>
 
 	<script type="text/javascript">
         $("#studatt").addClass("active");
@@ -207,6 +201,230 @@
 		   	 	endDate:new Date()
 		    }).datepicker("setDate", "0");
 		}
+        
+        listBranch();
+		function listBranch() {
+			$.ajax({
+				url : "branchlistactive.json",
+				dataType : "json",
+				type : "POST",
+				beforeSend : function() {
+					$("body").append("<div class='sweet-overlay' tabindex='-1' style='opacity: 1.09; display: block;width:100%; text-align:center;' id='loading'><i class='fa fa-spinner faa-spin animated' style='font-size:90px;margin-top:15%;color:black;'></i></div>");
+				},
+				complete : function() {
+					$("#loading").remove();
+				},
+				success : function(data) {
+					if (data != "")
+						$("#branch-list").html(listBranch_Supply(data)).change();
+				},
+				error : function(jqXHR, exception) {
+					catchErr(jqXHR, exception);
+				}
+			});
+		}
+		function listBranch_Supply(data) {
+			var list = "";
+			list += "<option value="+data[0].branch_id+" selected='selected'>"
+					+ data[0].branch_name + "</option>";
+			for (var i = 1; i < data.length; i++) {
+				list += "<option value="+data[i].branch_id+">"
+						+ data[i].branch_name + "</option>";
+
+			}
+			return list;
+		}
+		var listsubprog;
+		//SUBPROGRAM
+		function listSubProg() {
+			$.ajax({
+				url : "subproglistbranch.json",
+				dataType : "json",
+				method : "POST",
+				data : {
+					branch_id : $("#branch-list").val()
+				},
+				success : function(data) {
+					listsubprog = data;
+					$("#select-subprog").html(subProgList_Supply(data))
+							.change();
+					$("#select-subprog").select2();
+				},
+				error : function(jqXHR, exception) {
+					catchErr(jqXHR, exception);
+				}
+			});
+		}
+		function subProgList_Supply(data) {
+			var list = "";
+
+			list += "<optgroup label='Program'>";
+			for (var i = 0; i < data.length; i++) {
+
+				list += "<option value="+data[i].subprog_id+">"
+					+ data[i].sub_prog_title + "</option>";
+
+			}
+			list += "</optgroup>";
+			return list;
+		}
+		function listClass(subprog_id) {
+			$.ajax({
+				url : "classlist.json",
+				type : "POST",
+				beforeSend : function() {
+					$("body").append("<div class='sweet-overlay' tabindex='-1' style='opacity: 1.09; display: block;width:100%; text-align:center;' id='loading'><i class='fa fa-spinner faa-spin animated' style='font-size:90px;margin-top:15%;color:black;'></i></div>");
+				},
+				complete : function() {
+					$("#loading").remove();
+				},
+				success : function(data) {
+
+					$("#select-class").html(listClassSupply(data, subprog_id)).change();
+					$("#select-class").select2();
+				},
+				error : function(jqXHR, exception) {
+					catchErr(jqXHR, exception);
+				}
+			});
+		}
+
+		function listClassSupply(data) {
+			var clinB = classInBranch(data);
+			var tinB = teachInBranch(listTeaching);
+			var cAval = classAvaliable(tinB, clinB);
+			var list = "";
+			var lent = cAval.length;
+			list += "<optgroup label='Classroom'>";
+			for (var i = 0; i < lent; i++) {
+				list += "<option value="+cAval[i].class_id+">"
+						+ cAval[i].class_name + "</option>";
+			}
+			list += "</optgroup>";
+			return list;
+		}
+		//Filter class in current branch
+		function classInBranch(data) {
+			var classId = [];
+			var len = data.length;
+			for (var i = 0; i < len; i++) {
+				//filter class in one branch
+				if (data[i]['branch_id'] == $("#branch-list").val()) {
+					classId.push(data[i]);
+				}
+			}
+			return classId;
+		}
+
+		//Filter teaching in current branch
+		function teachInBranch(data) {
+			var obj = [];
+			var len = data.length;
+			for (var i = 0; i < len; i++) {
+				//filter teaching in one branch
+				if (data[i]['branch_id'] == $("#branch-list").val()) {
+					obj.push(data[i]);
+				}
+			}
+			return obj;
+		}
+
+		//Find avaliable class after filter in one branch
+		function classAvaliable(tinB, clinB) {
+			var result1 = [], result2 = [];
+			var tmp = null;
+			//Combine teach & class to find unique
+			for (var i = 0; i < clinB.length; i++) {
+				for (var j = 0; j < tinB.length; j++) {
+					if (clinB[i]['class_id'] == tinB[j]['class_id']) {
+						tmp = tinB[j];
+						break;
+					} else {
+						tmp = null;
+					}
+				}
+				if (tmp != null)
+					result1.push(tmp);
+			}
+
+			for (var i = 0; i < result1.length; i++) {
+				if (result1[i]['sub_prog_id'] == $("#select-subprog").val())
+					result2.push(result1[i]);
+			}
+			return result2;
+		}
+
+		var listTeaching;
+		//Get for filter data
+		function getListTeaching() {
+			$.ajax({
+				url : "teachinglist.json",
+				method : "POST",
+				success : function(data) {
+
+					listTeaching = data;
+				},
+				error : function(jqXHR, exception) {
+					catchErr(jqXHR, exception);
+				}
+			});
+		}
+		function callJTable(){
+       	 var tab=$('#tb_list').DataTable({searchHighlight: true});
+				tab.on( 'draw', function () {
+		        var body = $( tab.table().body() );
+		        body.unhighlight();
+		        body.highlight( tab.search() );  
+		    } );
+		 }
+		$("#branch-list").on("change", function() {
+			getListTeaching();
+			listSubProg();
+		});
+		$("#select-subprog").on("change", function() {
+			listClass($("#select-subprog").val());
+		});
+		$("#select-class").on("change",function(){
+			listStudInfo();
+		});
+		$("#select-period").on("change",function(){
+			listStudInfo();
+		});
+		
+		//var people="";
+		function listStudInfo(){
+  			$.ajax({
+  				url:"liststudinfo.json",
+  				method:"POST",
+  				data:{
+  					branch_id:$("#branch-list").val()
+  				},
+  				beforeSend: function() {
+  					$("body").append("<div class='sweet-overlay' tabindex='-1' style='opacity: 1.09; display: block;width:100%; text-align:center;' id='loading'><i class='fa fa-spinner faa-spin animated' style='font-size:90px;margin-top:15%;color:black;'></i></div>");
+  			    },
+  				complete: function(){
+  					$("#loading").remove();
+  				},
+  				success:function(people){
+  					find(people);
+  					//console.log(people);
+  					
+  				},
+  				error: function(jqXHR, exception) {
+  	          		catchErr(jqXHR, exception);
+  	            }
+  			});
+   		 }
+		function find(people){
+			var len=people.length;
+			var rs=[];
+			for(var i=0;i<len;i++){
+				if(people[i].subprog_id==$("#select-subprog").val() && people[i]['cla_id']==$("#select-class").val() && people[i]['period']==$("#select-period").val()){
+					rs.push(people[i]);
+				}
+			}
+			getPeople(rs);
+		}
 		$('#ck-att').on("click",function(){
 			var attent=[];
 		
@@ -214,11 +432,10 @@
 				var x = $(this).val();
 				
 				if($(this).prop('checked')==true){
-					x=x.substr(0,x.length-1);
-					x+=",'prog_type_id':'"+$('#list-lv').val()+"'}";
+					x=x.substr(0,x.length);
 				}else{
 					x=x.substr(0,x.length-16);
-					x+="'prog_type_id':'"+$('#list-lv').val()+"','is_absent':'a'}";
+					x+="'is_absent':'a'}";
 				}
 				x=x.replace(/'/g , "\"");
 				x=JSON.parse(x);
@@ -226,7 +443,7 @@
 			});
 			
 			submitAtt(JSON.stringify(uniqueFilter(attent)));
-			//console.log(JSON.stringify(uniqueFilter(attent)))
+			//console.log(JSON.stringify(uniqueFilter(attent)));
 		});
 		
 		function uniqueFilter(obj){
@@ -260,7 +477,7 @@
 	 	   		    }, function(){
 
 	 	   			$.ajax({
-	 	   				url:"submit_stud_att",
+	 	   				url:"attendance_stu_submit",
 	 	   				method:"POST",
 	 	   				data:{
 	 	   					ckatt:attent
@@ -277,7 +494,7 @@
 	 	   						alertify.success("SUBMIT SUCCESSFULLY !");
 	 	   						listStudInfo();
 		 	   				}else{
-		 	   					swal("FAILED",'' + resp+"","error");
+		 	   					swal("FAILED","Checking Attendance is not submitted","error");
 		 	   				}
 	 	   				},
 		 				error: function(jqXHR, exception) {
@@ -287,251 +504,8 @@
 	 	   	});
 			
 		}
-<c:if test="${adminsession.user_level!=3}">	
-
-		listBranch();
-        //FILTER BRANCH
-        function listBranch(){
- 			$.ajax({
- 				url:"branchlistactive.json",
- 				type:"POST",
- 				data:{
- 					flag:"emp"
- 				},
- 				beforeSend: function() {
- 					$("body").append("<div class='sweet-overlay' tabindex='-1' style='opacity: 1.09; display: block;width:100%; text-align:center;' id='loading'><i class='fa fa-spinner faa-spin animated' style='font-size:90px;margin-top:15%;color:black;'></i></div>");
- 			    },
- 				complete: function(){
- 					$("#loading").remove();
- 				},
- 				success:function(data){
- 					if(data!="")
- 					$("#branch-list").html(listBranch_Supply(data))
- 					.change();
- 					else
- 						$("#branch-list").empty();
- 				},
-              	error: function(jqXHR, exception) {
-              		catchErr(jqXHR, exception);
-                }
- 			});
- 		  }
-        function listBranch_Supply(data){
-			var list = "";
-			list += "<option value="+data[0].branch_id+" selected='selected'>"
-			+ data[0].branch_name + "</option>";
-			for (var i = 1; i < data.length; i++) {
-					list += "<option value="+data[i].branch_id+">"
-							+ data[i].branch_name + "</option>";
-				
-			}
-		
-			return list;
-        } 
+    </script>
         
-        $("#branch-list").on("change",function(){
-     		$.ajax({
-     			url:"list_main_pro_aft_branch.json",
-     			dataType:"json",
-     			method:"POST",
-     			data:{
-     			branch_id:$("#branch-list").val()	
-     			},
- 				beforeSend: function() {
- 					$("body").append("<div class='sweet-overlay' tabindex='-1' style='opacity: 1.09; display: block;width:100%; text-align:center;' id='loading'><i class='fa fa-spinner faa-spin animated' style='font-size:90px;margin-top:15%;color:black;'></i></div>");
- 			    },
- 				complete: function(){
- 					$("#loading").remove();
- 				},
-     			success:function(data){
-     				if(data!=undefined)
-	       				$("#list-main-prog").html(listMainProg_Supply(data))
-	       				.change();
-     				else
-     					$("#list-main-prog").empty().change();
-     			},
-     			error: function(jqXHR, exception){
-              		catchErr(jqXHR, exception);
-              }
-     		});
-     	 });
-        
-       function listMainProg_Supply(data){
-			var list="";
-			
-			for(var i=0;i<data.length;i++){
-				list +="<option value="+data[i].progid+">"+data[i].progtype+"</option>";
-			}
-			return list;
-		}
-       
-       $("#list-main-prog").on("change",function(){
-			listLevel();
-	   });
-       
-</c:if>
-
-<c:if test="${adminsession.user_level==3}">
- listLevel();
-</c:if>
-        function listLevel(){
-        	
-				$.ajax({
-					
-					<c:choose>
-			    		<c:when test="${adminsession.user_level!=3}">
-			    			url:"stud_list_level_af_prog_main.json",
-			    		</c:when>
-			    		<c:otherwise>
-			    			url:"attlvllistteachby.json",
-			    		</c:otherwise>
-			    	</c:choose>
-					
-					dataType:"json",
-					method:"POST",
-					data:{
-						branch_id:$("#branch-list").val(),
-						prog_id:$("#list-main-prog").val(),
-						action:"studying"
-					},
-					beforeSend: function() {
-						$("body").append("<div class='sweet-overlay' tabindex='-1' style='opacity: 1.09; display: block;width:100%; text-align:center;' id='loading'><i class='fa fa-spinner faa-spin animated' style='font-size:90px;margin-top:15%;color:black;'></i></div>");
-				    },
-					complete: function(){
-						$("#loading").remove();
-					},
-					success:function(data){
-						console.log(data);
-						if(data!=""){
-							$("#list-lv").html(listLv_Supply(data))
-							.change();
-						}else{
-							$("#list-lv").empty().change();
-						}
-					},
-					error: function(jqXHR, exception) {
-		          		catchErr(jqXHR, exception);
-		            }
-				});
-			}
-  			var prog_id;
-  			var jsonprog;
-			function listLv_Supply(data){
-  		
-				var list="";
-				for(var i=0;i<data.length;i++){
-					list+="<option value="+data[i].prog_type_id+">"+data[i].level+"</option>";
-				}
-				jsonprog=data;
-				return list;
-			}
-        
-			function listClass(){
-				var prog_id1;
-				if(jsonprog!=null){
-					prog_id1=jsonprog[0].prog_id;
-				}
-				$.ajax({
-					url:"list_class_aft_lvl.json",
-					//dataType:"json",
-					method:"POST",
-					data:{
-						branch_id:$("#branch-list").val(),
-						<c:choose>
-							<c:when test="${adminsession.user_level!=3}">
-								prog_id:$("#list-main-prog").val(),
-							</c:when>
-							<c:otherwise>
-								prog_id:prog_id1,
-							</c:otherwise>
-						</c:choose>
-						lvl:$("#list-lv").val(),
-						action:"studying"
-					},
-					beforeSend: function() {
-						$("body").append("<div class='sweet-overlay' tabindex='-1' style='opacity: 1.09; display: block;width:100%; text-align:center;' id='loading'><i class='fa fa-spinner faa-spin animated' style='font-size:90px;margin-top:15%;color:black;'></i></div>");
-				    },
-					complete: function(){
-						$("#loading").remove();
-					},
-					success:function(data){
-						if(data!="error"){
-							$("#list-class").html(listClass_Supply(data)).change();
-							
-						}else{
-							$("#list-class").empty().change();
-							
-						}
-					},
-					error: function(jqXHR, exception) {
-		          		catchErr(jqXHR, exception);
-		            }
-				});
-			}
-  	
-			function listClass_Supply(data){
-  		
-				var list="";
-				for(var i=0;i<data.length;i++){
-					list+="<option value="+data[i].class_id+">"+data[i].class_number+"</option>";
-				}
-				
-				return list;
-			}
-			function period(){
-				$("#ampm").html();
-			}
-			
-			$("#list-lv").on("change",function(){
-				listClass();
-			});
-			var ampm="am";
-			$("#ampm").on("change",function(){
-				ampm=$(this).val();
-				if(($("#list-lv").val())!=null && ($("#list-class").val())!=null){
-					listStudInfo();	
-				}else{
-					swal("FAILED","Select level or class..!","error");
-				}
-				
-			});
-			
-			$("#list-class").on("change",function(){
-				listStudInfo();	
-			});
-			var people="";
-
-			function listStudInfo(){
-				
-	   			if($("#list-lv").val()!=null &&$("#list-class").val()!=null){
-		        	 $.ajax({
-		   				url:"list_table_period.json",
-		   				dataType:"json",
-		   				method:"POST",
-		   				beforeSend: function() {
-		   					$("body").append("<div class='sweet-overlay' tabindex='-1' style='opacity: 1.09; display: block;width:100%; text-align:center;' id='loading'><i class='fa fa-spinner faa-spin animated' style='font-size:90px;margin-top:15%;color:black;'></i></div>");
-		   			    },
-		   				complete: function(){
-		   					$("#loading").remove();
-		   				},
-		   				data:{
-		   					period:ampm,
-		   					prog_t_id:$("#list-lv").val(),
-		   					class_id:$("#list-class").val()
-		   				},
-		   				success:function(people){
-		   					getPeople(people);
-		   				},
-		   				error: function(jqXHR, exception) {
-		   	          		catchErr(jqXHR, exception);
-		   	            }
-		   	           
-		   				
-		   			});
-	   			}
-	   			
-	   		 }
-        </script>
 	<script
 		src="${pageContext.servletContext.contextPath }/assets/dist/attendant.svr.js"></script>
 	<script>

@@ -69,15 +69,13 @@ function getListDaySupply(fstDate,lstDate,indexDateName,dateNow,dateinControl){
 }
 function getPeople(people){
 	$.ajax({
-		url:"get_list_att.json",
+		url:"attendancestuchecklist.json",
 		method:"POST",
 		data:{
 			date:dateinControl
 		},
 		success:function(cklist){
-			
 			$("#list-emp").html(getEmpSupply(people,cklist));
-			
 		}
 	});
 	

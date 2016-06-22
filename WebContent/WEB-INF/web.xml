@@ -441,4 +441,44 @@
     <servlet-name>AttendanceEmpSubmit</servlet-name>
     <url-pattern>/admin/cpanel/attendance_emp_submit</url-pattern>
   </servlet-mapping>
+  <servlet>
+    <servlet-name>AttendanceStuCheckList</servlet-name>
+    <servlet-class>controller.admin.attendance.AttendanceStuCheckList</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>AttendanceStuCheckList</servlet-name>
+    <url-pattern>/admin/cpanel/attendancestuchecklist.json</url-pattern>
+  </servlet-mapping>
+  <servlet>
+    <servlet-name>AttendanceStuSubmit</servlet-name>
+    <servlet-class>controller.admin.attendance.AttendanceStuSubmit</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>AttendanceStuSubmit</servlet-name>
+    <url-pattern>/admin/cpanel/attendance_stu_submit</url-pattern>
+  </servlet-mapping>
+  <servlet>
+    <servlet-name>ScoreSubmit</servlet-name>
+    <servlet-class>controller.admin.score.ScoreSubmit</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>ScoreSubmit</servlet-name>
+    <url-pattern>/admin/cpanel/score_submit</url-pattern>
+  </servlet-mapping>
+  <servlet>
+    <servlet-name>ScoreList</servlet-name>
+    <servlet-class>controller.admin.score.ScoreList</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>ScoreList</servlet-name>
+    <url-pattern>/admin/cpanel/scorelist.json</url-pattern>
+  </servlet-mapping>
+  <servlet>
+    <servlet-name>ScoreStatus</servlet-name>
+    <servlet-class>controller.admin.score.ScoreStatus</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>ScoreStatus</servlet-name>
+    <url-pattern>/admin/cpanel/score_status</url-pattern>
+  </servlet-mapping>
 </web-app>

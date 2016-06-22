@@ -144,10 +144,7 @@
 	<!-- END BASE -->
 
 	<!-- MAIN SCRIPT -->
-	<script
-		src="${pageContext.servletContext.contextPath }/assets/js/libs/jquery/jquery-1.11.2.min.js"></script>
-	<script
-		src="${pageContext.servletContext.contextPath }/assets/js/libs/bootstrap/bootstrap.min.js"></script>
+	
 	<script
 		src="${pageContext.servletContext.contextPath }/assets/js/core/source/App.js"></script>
 	<script
@@ -304,6 +301,7 @@
  					$("#loading").remove();
  				},
      			success:function(people){
+     				console.log(people)
      				getPeople(people);
      			},
      			error: function(jqXHR, exception){

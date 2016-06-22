@@ -322,6 +322,7 @@
 						"<thead>"+
 						"<tr>"+
 							"<th class='sort-alpha'>BRANCH</th>"+
+							"<th class='sort-alpha'>MAIN-PROGRAM</th>"+
 							"<th class='sort-alpha'>SUB-PROGRAM</th>"+
 							"<th class='sort-numeric'>1TERM</th>"+
 							"<th class='sort-numeric'>1SEM</th>"+
@@ -335,6 +336,7 @@
 			for(var i=0;i<data.length;i++){
 				table+="<tr>"+
 						"<td><span class='badge style-accent'>"+data[i].branch_name+"</span></td>"+
+						"<td>"+data[i].prog_title+"</td>"+
 						"<td>"+data[i].sub_prog_title+"</td>"+
 						"<td>"+"$"+data[i].term_fee+"</td>"+
 						"<td>"+"$"+data[i].sem_fee+"</td>"+

@@ -230,12 +230,6 @@
 
 	<!-- BEGIN JAVASCRIPT -->
 	<script
-		src="${pageContext.servletContext.contextPath }/assets/js/libs/jquery/jquery-1.11.2.min.js"></script>
-	<script
-		src="${pageContext.servletContext.contextPath }/assets/js/libs/jquery/jquery-migrate-1.2.1.min.js"></script>
-	<script
-		src="${pageContext.servletContext.contextPath }/assets/js/libs/bootstrap/bootstrap.min.js"></script>
-	<script
 		src="${pageContext.servletContext.contextPath }/assets/js/libs/spin.js/spin.min.js"></script>
 	<script
 		src="${pageContext.servletContext.contextPath }/assets/js/libs/autosize/jquery.autosize.min.js"></script>

@@ -32,7 +32,7 @@
 <link type="text/css" rel="stylesheet"
 	href="${pageContext.servletContext.contextPath }/assets/dist/sweetalert2.css">
 <link type="text/css" rel="stylesheet"
-	href="${pageContext.servletContext.contextPath }/assets/dist/alertify.css" />
+	href="${pageContext.servletContext.contextPath }/assets/css/theme-default/libs/select2/select2.css" />
 <link type="text/css" rel="stylesheet"
 	href="${pageContext.servletContext.contextPath }/assets/css/theme-default/libs/DataTables/jquery.dataTables.css">
 
@@ -46,8 +46,7 @@
 }
 </style>
 </head>
-<body class="menubar-hoverable header-fixed " ng-app="myApp"
-	ng-controller="myCtl">
+<body class="menubar-hoverable header-fixed ">
 	<jsp:include
 		page="${pageContext.servletContext.contextPath }/../mastertop/header.jsp"></jsp:include>
 
@@ -92,40 +91,34 @@
 													</div>
 												</div>
 											</div>
-											<c:if test="${adminsession.user_level!=3}">
-												<div class="col-md-2">
-													<div class="form-group floating-label">
-														<select class="form-control" id="branch-list">
-
-														</select> <label>BRANCH</label>
-													</div>
-												</div>
-												<div class="col-md-3">
-													<div class="form-group floating-label">
-														<select class="form-control" id="list-main-prog">
-
-														</select> <label>PROGRAM TYPE</label>
-													</div>
-												</div>
-											</c:if>
 											<div class="col-md-2">
 												<div class="form-group floating-label">
-													<select class="form-control" id="list-lv">
+													<select name="branch" id="branch-list" class="form-control"
+														required>
 
-													</select> <label>LEVEL</label>
+													</select> <label for="branch">BRANCH</label>
+												</div>
+											</div>
+											<div class="col-md-3">
+												<div class="form-group floating-label">
+													<select class='form-control select2-list'
+														id='select-subprog' placeholder="SELECT SUB-PROGRAM"
+														required>
+
+													</select>
+												</div>
+											</div>
+											<div class="col-md-2">
+												<div class="form-group floating-label">
+													<select class='form-control select2-list' id='select-class'
+														placeholder="SELECT CLASS" required>
+
+													</select>
 												</div>
 											</div>
 											<div class="col-md-1">
 												<div class="form-group floating-label">
-													<select class="form-control" id="list-class"
-														ng-click="listFunction()">
-
-													</select> <label>CLASS</label>
-												</div>
-											</div>
-											<div class="col-md-1">
-												<div class="form-group floating-label">
-													<select class="form-control" id="ampm">
+													<select class="form-control" id="select-period">
 														<option value="am">AM</option>
 														<option value="pm">PM</option>
 													</select> <label>PERIOD</label>
@@ -140,7 +133,7 @@
 											</div>
 										</div>
 									</form>
-									<div class="table-responsive" id="list-emp"></div>
+									<div class="table-responsive" id="list-score"></div>
 								</div>
 								<!--end .card-body -->
 							</div>
@@ -164,10 +157,6 @@
 
 	<!-- MAIN SCRIPT -->
 	<script
-		src="${pageContext.servletContext.contextPath }/assets/js/libs/jquery/jquery-1.11.2.min.js"></script>
-	<script
-		src="${pageContext.servletContext.contextPath }/assets/js/libs/bootstrap/bootstrap.min.js"></script>
-	<script
 		src="${pageContext.servletContext.contextPath }/assets/js/core/source/App.js"></script>
 	<script
 		src="${pageContext.servletContext.contextPath }/assets/js/core/source/AppNavigation.js"></script>
@@ -180,37 +169,15 @@
 		src="${pageContext.servletContext.contextPath }/assets/js/libs/bootstrap-datepicker/bootstrap-datepicker.js"></script>
 	<script
 		src="${pageContext.servletContext.contextPath }/assets/dist/sweetalert2.min.js"></script>
-
+	<script
+		src="${pageContext.servletContext.contextPath }/assets/js/libs/select2/select2.min.js"></script>
 	<script
 		src="${pageContext.servletContext.contextPath }/assets/js/libs/DataTables/jquery.dataTables.min.js"></script>
 
 	<script type="text/javascript">
         $("#score").addClass("active");
-       /*  app=angular.module("myApp",[]);
 		
-		app.controller('myCtl',function ($scope,$http){
-		
-			$scope.listFunction=function(){
-				$http({
-					url:"list_table_period.json",
-					method:"POST",
-					params:{
-	   					period:ampm,
-	   					prog_t_id:$("#list-lv").val(),
-	   					class_id:$("#list-class").val()
-	   				}
-				}).then(function (response){
-					console.log(response);
-					$scope.list=response.data;
-				});
-			}
-		}); */
-		
-        initDate();
-        function callJTable(){
- 			$('#tb_list').DataTable();
- 			$('[data-toggle="tooltip"]').tooltip();
- 		}
+ 		initDate();
         
         function initDate(){
 			$('#demo-date').datepicker({
@@ -221,345 +188,420 @@
 		   	 	endDate:new Date()
 		    }).datepicker("setDate", "0");
 		}
-		$('#ck-att').on("click",function(){
-			var attent=[];
-			$("[class*='ck_']").each(function(index,obj){
-				var x = $(this).val();
-				x=x.substr(0,x.length-1);
-				if($(this).prop('checked')==true){
-					x+=",'prog_type_id':'"+$('#list-lv').val()+"','is_absent':'f'}";
-				}else{
-					x+=",'prog_type_id':'"+$('#list-lv').val()+"','is_absent':'t'}";
+        
+        listBranch();
+		function listBranch() {
+			$.ajax({
+				url : "branchlistactive.json",
+				dataType : "json",
+				type : "POST",
+				beforeSend : function() {
+					$("body").append("<div class='sweet-overlay' tabindex='-1' style='opacity: 1.09; display: block;width:100%; text-align:center;' id='loading'><i class='fa fa-spinner faa-spin animated' style='font-size:90px;margin-top:15%;color:black;'></i></div>");
+				},
+				complete : function() {
+					$("#loading").remove();
+				},
+				success : function(data) {
+					if (data != "")
+						$("#branch-list").html(listBranch_Supply(data)).change();
+				},
+				error : function(jqXHR, exception) {
+					catchErr(jqXHR, exception);
 				}
-				attent.push(x);
 			});
-			if(attent.toString!=null)
-			submitAtt(attent.toString());
-		});
-		
-		function submitAtt(attent){
-			swal({   
-	  			 title: "Confirm submition!",   
-	 				 text: "Submit this attendant will not modify!",   
-	 				 type: "warning",   
-	 				 showCancelButton: true,   
-	 				 confirmButtonColor: "#DD6B55",   
-	 				 confirmButtonText: "Yes, submit it!",   
-	 				 closeOnConfirm: true
-	 	   		    }, function(){
-
-	 	   			$.ajax({
-	 	   				url:"",
-	 	   				method:"POST",
-	 	   				data:{
-	 	   					ckatt:attent
-	 	   				},
-		 	   			beforeSend: function() {
-		 					$("body").append("<div class='sweet-overlay' tabindex='-1' style='opacity: 1.09; display: block;width:100%; text-align:center;' id='loading'><i class='fa fa-spinner faa-spin animated' style='font-size:90px;margin-top:15%;color:black;'></i></div>");
-		 			    },
-		 				complete: function(){
-		 					$("#loading").remove();
-		 				},
-	 	   				success:function(resp){
-	 	   					alertify.logPosition("bottom right");
-	 	   					if(resp=="true"){
-	 	   						alertify.success("SUBMIT SUCCESSFULLY !");
-	 	   						listStudInfo();
-	 	   					}else{
-	 	   						swal("FALIED","Unable to submit!","error");
-	 	   					}
-	 	   				},
-		 				error: function(jqXHR, exception) {
-		              		catchErr(jqXHR, exception);
-		                }
-	 	   			});  	
-	 	   	});
-			
 		}
-<c:choose>	
-	<c:when test="${adminsession.user_level!=3}">
-		listBranch();
-        //FILTER BRANCH
-        function listBranch(){
- 			$.ajax({
- 				url:"branchlistactive.json",
- 				type:"POST",
- 				data:{
- 					flag:"emp"
- 				},
- 				beforeSend: function() {
- 					$("body").append("<div class='sweet-overlay' tabindex='-1' style='opacity: 1.09; display: block;width:100%; text-align:center;' id='loading'><i class='fa fa-spinner faa-spin animated' style='font-size:90px;margin-top:15%;color:black;'></i></div>");
- 			    },
- 				complete: function(){
- 					$("#loading").remove();
- 				},
- 				success:function(data){
- 					if(data!="")
- 					$("#branch-list").html(listBranch_Supply(data))
- 					.change();
- 					else
- 						$("#branch-list").empty();
- 				},
-              	error: function(jqXHR, exception) {
-              		catchErr(jqXHR, exception);
-                }
- 			});
- 		  }
-        function listBranch_Supply(data){
+		function listBranch_Supply(data) {
 			var list = "";
 			list += "<option value="+data[0].branch_id+" selected='selected'>"
-			+ data[0].branch_name + "</option>";
+					+ data[0].branch_name + "</option>";
 			for (var i = 1; i < data.length; i++) {
-					list += "<option value="+data[i].branch_id+">"
-							+ data[i].branch_name + "</option>";
-			}
-		
-			return list;
-        } 
-        
-        $("#branch-list").on("change",function(){
-     		$.ajax({
-     			url:"list_main_pro_aft_branch.json",
-     			dataType:"json",
-     			method:"POST",
-     			data:{
-     			branch_id:$("#branch-list").val()	
-     			},
- 				beforeSend: function() {
- 					$("body").append("<div class='sweet-overlay' tabindex='-1' style='opacity: 1.09; display: block;width:100%; text-align:center;' id='loading'><i class='fa fa-spinner faa-spin animated' style='font-size:90px;margin-top:15%;color:black;'></i></div>");
- 			    },
- 				complete: function(){
- 					$("#loading").remove();
- 				},
-     			success:function(data){
-     				if(data!=undefined)
-	       				$("#list-main-prog").html(listMainProg_Supply(data))
-	       				.change();
-     				else
-     					$("#list-main-prog").empty().change();
-     			},
-     			error: function(jqXHR, exception){
-              		catchErr(jqXHR, exception);
-              }
-     		});
-     	 });
-        
-       function listMainProg_Supply(data){
-			var list="";
-			
-			for(var i=0;i<data.length;i++){
-				list +="<option value="+data[i].progid+">"+data[i].progtype+"</option>";
-			}
-			return list;
-		 }
-       $("#list-main-prog").on("change",function(){
-			listLevel();
-	   });
-       
-     </c:when>
-     <c:otherwise>
-     	listLevel();
-     </c:otherwise>
-</c:choose>      
+				list += "<option value="+data[i].branch_id+">"
+						+ data[i].branch_name + "</option>";
 
-        function listLevel(){
-				$.ajax({
-					<c:choose>
-			    		<c:when test="${adminsession.user_level!=3}">
-			    			url:"stud_list_level_af_prog_main.json",
-			    		</c:when>
-			    		<c:otherwise>
-			    			url:"attlvllistteachby.json",
-			    		</c:otherwise>
-			    	</c:choose>
-					dataType:"json",
-					method:"POST",
-					data:{
-						branch_id:$("#branch-list").val(),
-						prog_id:$("#list-main-prog").val(),
-						action:"studying"
-					},
-					beforeSend: function() {
-						$("body").append("<div class='sweet-overlay' tabindex='-1' style='opacity: 1.09; display: block;width:100%; text-align:center;' id='loading'><i class='fa fa-spinner faa-spin animated' style='font-size:90px;margin-top:15%;color:black;'></i></div>");
-				    },
-					complete: function(){
-						$("#loading").remove();
-					},
-					success:function(data){
-						if(data!=""){
-							$("#list-lv").html(listLv_Supply(data))
+			}
+			return list;
+		}
+		var listsubprog;
+		//SUBPROGRAM
+		function listSubProg() {
+			$.ajax({
+				url : "subproglistbranch.json",
+				dataType : "json",
+				method : "POST",
+				data : {
+					branch_id : $("#branch-list").val()
+				},
+				success : function(data) {
+					listsubprog = data;
+					$("#select-subprog").html(subProgList_Supply(data))
 							.change();
-						}else{
-							$("#list-lv").empty().change();
-						}
-					},
-					error: function(jqXHR, exception) {
-		          		catchErr(jqXHR, exception);
-		            }
-				});
-			}
-       		var prog_id;
-			function listLv_Supply(data){
-  		
-				var list="";
-				for(var i=0;i<data.length;i++){
-					list+="<option value="+data[i].prog_type_id+">"+data[i].level+"</option>";
+					$("#select-subprog").select2();
+				},
+				error : function(jqXHR, exception) {
+					catchErr(jqXHR, exception);
 				}
-				jsonprog=data;
-				return list;
-			}
-        
-			
-			function listClass(){
-				var prog_id1=jsonprog[0].prog_id;
-				$.ajax({
-					url:"list_class_aft_lvl.json",
-					//dataType:"json",
-					method:"POST",
-					data:{
-						branch_id:$("#branch-list").val(),
-						<c:choose>
-							<c:when test="${adminsession.user_level!=3}">
-								prog_id:$("#list-main-prog").val(),
-							</c:when>
-							<c:otherwise>
-								prog_id:prog_id1,
-							</c:otherwise>
-						</c:choose>
-						lvl:$("#list-lv").val(),
-						action:"studying"
-					},
-					beforeSend: function() {
-						$("body").append("<div class='sweet-overlay' tabindex='-1' style='opacity: 1.09; display: block;width:100%; text-align:center;' id='loading'><i class='fa fa-spinner faa-spin animated' style='font-size:90px;margin-top:15%;color:black;'></i></div>");
-				    },
-					complete: function(){
-						$("#loading").remove();
-					},
-					success:function(data){
-						if(data!="error"){
-							$("#list-class").html(listClass_Supply(data)).change();
-							
-						}else{
-							$("#list-class").empty().change();
-							
-						}
-					},
-					error: function(jqXHR, exception) {
-		          		catchErr(jqXHR, exception);
-		            }
-				});
-			}
-  	
-			function listClass_Supply(data){
-  		
-				var list="";
-				for(var i=0;i<data.length;i++){
-					list+="<option value="+data[i].class_id+">"+data[i].class_number+"</option>";
-				}
-				
-				return list;
-			}
-			
-			
-			$("#list-lv").on("change",function(){
-				listClass();
 			});
-			var ampm="am";
-			$("#ampm").on("change",function(){
-				ampm=$(this).val();
-				if(($("#list-lv").val())!=null && ($("#list-class").val())!=null){
-					listStudInfo();	
-				}else{
-					swal("FAILED","Select level or class..!","error");
-				}
-				
-			});
-			
-			$("#list-class").on("change",function(){
-				listStudInfo();
-			});
-		
-			
-			 function listStudInfo(){
-				
-	   			if($("#list-lv").val()!=null &&$("#list-class").val()!=null){
-		        	 $.ajax({
-		   				url:"list_table_period.json",
-		   				dataType:"json",
-		   				method:"POST",
-		   				beforeSend: function() {
-		   					$("body").append("<div class='sweet-overlay' tabindex='-1' style='opacity: 1.09; display: block;width:100%; text-align:center;' id='loading'><i class='fa fa-spinner faa-spin animated' style='font-size:90px;margin-top:15%;color:black;'></i></div>");
-		   			    },
-		   				complete: function(){
-		   					$("#loading").remove();
-		   				},
-		   				data:{
-		   					period:ampm,
-		   					prog_t_id:$("#list-lv").val(),
-		   					class_id:$("#list-class").val()
-		   				},
-		   				success:function(people){
-		   					$("#list-emp").html(listStudInfoSupply(people));
-		   				 	callJTable();
-		   				},
-		   				error: function(jqXHR, exception) {
-		   	          		catchErr(jqXHR, exception);
-		   	            }
-		   			});
-	   			}
-	   			
-	   		 } 
-			function listStudInfoSupply(data){
-				console.log(data);
-	        	 var table="<table class='table' id='tb_list'>";
-		 			table+="<thead>"+
-		 					"<tr>"+
-		 						"<th class='sort-alpha' style='width:10%'>Name</th>"+
-		 						"<th class='sort-alpha' style='width:10%'>Name</th>"+
-		 						"<th class='sort-alpha'>VO</th>"+
-		 						"<th class='sort-numberic'>GR</th>"+
-		 						"<th class='sort-numberic'>RE</th>"+
-		 						"<th class='sort-numberic'>WR</th>"+
-		 						"<th class='sort-numberic'>LI</th>"+
-		 						"<th class='sort-numberic'>SP</th>"+
-		 						"<th class='sort-numberic'>PA</th>"+
-		 						"<th class='sort-numberic'>MA</th>"+
-		 						"<th class='sort-numberic'>CL</th>"+
-		 						"<th>ACTION</th>"+
-		 					"</tr>"+
-		 				   "</thead>"+
-		 				   "<tbody>";
-		 			for(var i=0;i<data.length;i++){
-		 				table+= "<tr>"+
-		 							"<td>"+data[i].id_card+"</td>"+
-		 							"<td>"+data[i].en_name+"</td>"+
-		 							"<td><input type='number' min='0' max='10' class='form-control' required value='0' disabled></td>"+
-		 							"<td><input type='number' min='0' max='10' class='form-control' required value='0' disabled></td>"+
-		 							"<td><input type='number' min='0' max='10' class='form-control' required value='0' disabled></td>"+
-		 							"<td><input type='number' min='0' max='10' class='form-control' required value='0' disabled></td>"+
-		 							"<td><input type='number' min='0' max='10' class='form-control' required value='0' disabled></td>"+
-		 							"<td><input type='number' min='0' max='10' class='form-control' required value='0'></td>"+
-		 							"<td><input type='number' min='0' max='10' class='form-control' required value='0'></td>"+
-		 							"<td><input type='number' min='0' max='10' class='form-control' required value='0'></td>"+
-		 							"<td><input type='number' min='0' max='5' class='form-control' required value='0'></td>"+
-		 							"<td style='width:8%'>"+
-		 							"<button type='button' class='btn ink-reaction btn-floating-action btn-xs btn-warning' data-toggle='tooltip' data-placement='top' title='Edit' onClick=\"edit('"+data[i].position_id+"','"+data[i].position+"','"+data[i].salary+"')\" ><i class='md md-mode-edit'></i></button>"+
-		 							"<button type='button' class='btn ink-reaction btn-floating-action btn-xs btn-info' data-toggle='tooltip' data-placement='top' title='Save' onClick=\"edit('"+data[i].position_id+"','"+data[i].position+"','"+data[i].salary+"')\" ><i class='md md-save'></i></button>"+
-		 							"</td>"+
-		 						"</tr>";
-		 			}
-		 			table+="</tbody></table>";
-		 			if(data==null)
-		 				return "<span class='text-danger'>NO RECORD FOUND</span>";
-		 			return table;
-	         }
-        </script>
+		}
+		function subProgList_Supply(data) {
+			var list = "";
 
-	<script>
-        $('#demo-date').datepicker().on("changeDate", function (ev) {
-        	listStudInfo();        
+			list += "<optgroup label='Program'>";
+			for (var i = 0; i < data.length; i++) {
+
+				list += "<option value="+data[i].subprog_id+">"
+					+ data[i].sub_prog_title + "</option>";
+
+			}
+			list += "</optgroup>";
+			return list;
+		}
+		function listClass(subprog_id) {
+			$.ajax({
+				url : "classlist.json",
+				type : "POST",
+				beforeSend : function() {
+					$("body").append("<div class='sweet-overlay' tabindex='-1' style='opacity: 1.09; display: block;width:100%; text-align:center;' id='loading'><i class='fa fa-spinner faa-spin animated' style='font-size:90px;margin-top:15%;color:black;'></i></div>");
+				},
+				complete : function() {
+					$("#loading").remove();
+				},
+				success : function(data) {
+
+					$("#select-class").html(listClassSupply(data, subprog_id)).change();
+					$("#select-class").select2();
+				},
+				error : function(jqXHR, exception) {
+					catchErr(jqXHR, exception);
+				}
+			});
+		}
+
+		function listClassSupply(data) {
+			var clinB = classInBranch(data);
+			var tinB = teachInBranch(listTeaching);
+			var cAval = classAvaliable(tinB, clinB);
+			var list = "";
+			var lent = cAval.length;
+			list += "<optgroup label='Classroom'>";
+			for (var i = 0; i < lent; i++) {
+				list += "<option value="+cAval[i].class_id+">"
+						+ cAval[i].class_name + "</option>";
+			}
+			list += "</optgroup>";
+			return list;
+		}
+		//Filter class in current branch
+		function classInBranch(data) {
+			var classId = [];
+			var len = data.length;
+			for (var i = 0; i < len; i++) {
+				//filter class in one branch
+				if (data[i]['branch_id'] == $("#branch-list").val()) {
+					classId.push(data[i]);
+				}
+			}
+			return classId;
+		}
+
+		//Filter teaching in current branch
+		function teachInBranch(data) {
+			var obj = [];
+			var len = data.length;
+			for (var i = 0; i < len; i++) {
+				//filter teaching in one branch
+				if (data[i]['branch_id'] == $("#branch-list").val()) {
+					obj.push(data[i]);
+				}
+			}
+			return obj;
+		}
+
+		//Find avaliable class after filter in one branch
+		function classAvaliable(tinB, clinB) {
+			var result1 = [], result2 = [];
+			var tmp = null;
+			//Combine teach & class to find unique
+			for (var i = 0; i < clinB.length; i++) {
+				for (var j = 0; j < tinB.length; j++) {
+					if (clinB[i]['class_id'] == tinB[j]['class_id']) {
+						tmp = tinB[j];
+						break;
+					} else {
+						tmp = null;
+					}
+				}
+				if (tmp != null)
+					result1.push(tmp);
+			}
+
+			for (var i = 0; i < result1.length; i++) {
+				if (result1[i]['sub_prog_id'] == $("#select-subprog").val())
+					result2.push(result1[i]);
+			}
+			return result2;
+		}
+
+		var listTeaching;
+		//Get for filter data
+		function getListTeaching() {
+			$.ajax({
+				url : "teachinglist.json",
+				method : "POST",
+				success : function(data) {
+
+					listTeaching = data;
+				},
+				error : function(jqXHR, exception) {
+					catchErr(jqXHR, exception);
+				}
+			});
+		}
+		function callJTable(){
+       	 var tab=$('#tb_list').DataTable({searchHighlight: true});
+				tab.on( 'draw', function () {
+		        var body = $( tab.table().body() );
+		        body.unhighlight();
+		        body.highlight( tab.search() );  
+		    } );
+		 }
+		$("#branch-list").on("change", function() {
+			getListTeaching();
+			listSubProg();
+		});
+		$("#select-subprog").on("change", function() {
+			listClass($("#select-subprog").val());
+		});
+		$("#select-class").on("change",function(){
+			listStudInfo();
+		});
+		$("#select-period").on("change",function(){
+			listStudInfo();
+		});
+		$('#demo-date').datepicker().on("changeDate", function (ev) {
+			listBranch();
         });
+		var scorelist;
+		function listStudInfo(){
+			scoreList();
+  			$.ajax({
+  				url:"liststudinfo.json",
+  				method:"POST",
+  				data:{
+  					branch_id:$("#branch-list").val()
+  				},
+  				beforeSend: function() {
+  					$("body").append("<div class='sweet-overlay' tabindex='-1' style='opacity: 1.09; display: block;width:100%; text-align:center;' id='loading'><i class='fa fa-spinner faa-spin animated' style='font-size:90px;margin-top:15%;color:black;'></i></div>");
+  			    },
+  				complete: function(){
+  					$("#loading").remove();
+  				},
+  				success:function(people){
+  					//find filter people in specific filter
+  					
+  					
+  					/* if(people!=""){
+  						var people=$.extend(true,find( ), scorelist);
+  	  					console.log(people);
+  	  					
+  					} */
+  						$("#list-score").html(listStudInfoSupply(find(people )));
+	  					callJTable(); 
+  				},
+  				error: function(jqXHR, exception) {
+  	          		catchErr(jqXHR, exception);
+  	            }
+  			});
+   		 }
+		
+		function scoreList(){
+			var monthNames = ["Jan", "Feb", "Mar","Apr", "May", "Jun", "Jul","Aug", "Sep", "Oct", "Nov", "Dec"];
+			var token=($('#control-date').val()).split("/");
+			var dateinControl=token[1]+"-"+(monthNames.indexOf(token[0])+1)+"-1";
+  			$.ajax({
+  				url:"scorelist.json",
+  				method:"POST",
+  				data:{
+  					month:dateinControl
+  				},
+  				success:function(data){
+  					scorelist=data;
+  				},
+  				error: function(jqXHR, exception) {
+  	          		catchErr(jqXHR, exception);
+  	            }
+  			});
+   		 }
+		function searchObj(json,stuid){
+			var s=[];
+				 $.each(json, function(i, v) {
+			        if (v.student_id == stuid[i].student_id) {
+			        	s.push(stuid[i]);
+			        }
+			    }); 
+			return s;
+		}
+		function find(people){
+			var len=people.length;
+			var rs=[];
+			for(var i=0;i<len;i++){
+				if(people[i].subprog_id==$("#select-subprog").val() && people[i]['cla_id']==$("#select-class").val() && people[i]['period']==$("#select-period").val()){
+					rs.push(people[i]);
+				}
+			}
+			return rs;
+		}
+		function listStudInfoSupply(data){
+			console.log(data);
+			console.log(scorelist);
+			var len=scorelist.length;
+			var table="<table class='table' id='tb_list'>";
+			table+="<thead>"+
+						"<tr>"+
+							"<th class='sort-alpha' style='width:10%'>Name</th>"+
+							"<th class='sort-alpha' style='width:10%'>Name</th>"+
+							"<th class='sort-alpha'>VO</th>"+
+							"<th class='sort-numberic'>GR</th>"+
+							"<th class='sort-numberic'>RE</th>"+
+							"<th class='sort-numberic'>WR</th>"+
+							"<th class='sort-numberic'>LI</th>"+
+							"<th class='sort-numberic'>SP</th>"+
+							"<th class='sort-numberic'>PA</th>"+
+							"<th class='sort-numberic'>MA</th>"+
+							"<th class='sort-numberic'>CL</th>"+
+							"<th>ACTION</th>"+
+						"</tr>"+
+					   "</thead>"+
+			   		"<tbody>";
+			for(var i=0;i<data.length;i++){
+				var ck=false;
+				table+= "<tr>"+
+					"<td>"+data[i].id_card+"</td>"+
+					"<td>"+data[i].en_name+"</td>";
+				for(var j=0;j<len; j++){
+					if((data[i].student_id==scorelist[j].student_id) && (data[i].subprog_id==scorelist[j].sub_prog_id)){ck=true;
+						table+="<td><input type='number' min='0' max='10' id='vob' class='form-control vob_"+data[i].student_id+"' required value='"+scorelist[j].vocab+"' disabled></td>"+
+								"<td><input type='number' min='0' max='10' id='gr' class='form-control gr_"+data[i].student_id+"' required value='"+scorelist[j].gr+"' disabled></td>"+
+								"<td><input type='number' min='0' max='10' id='re' class='form-control re_"+data[i].student_id+"' required value='"+scorelist[j].re+"' disabled></td>"+
+								"<td><input type='number' min='0' max='10' id='wr' class='form-control wr_"+data[i].student_id+"' required value='"+scorelist[j].wr+"' disabled></td>"+
+								"<td><input type='number' min='0' max='10' id='li' class='form-control li_"+data[i].student_id+"' required value='"+scorelist[j].li+"' disabled></td>"+
+								"<td><input type='number' min='0' max='10' id='sp' class='form-control sp_"+data[i].student_id+"' required value='"+scorelist[j].sp+"' disabled></td>"+
+								"<td><input type='number' min='0' max='10' id='pa' class='form-control pa_"+data[i].student_id+"' required value='"+scorelist[j].pa+"' disabled></td>"+
+								"<td><input type='number' min='0' max='10' id='ma' class='form-control ma_"+data[i].student_id+"' required value='"+scorelist[j].ma+"' disabled></td>"+
+								"<td><input type='number' min='0' max='5' id='cl' class='form-control cl_"+data[i].student_id+"' required value='"+scorelist[j].class_part+"' disabled></td>";
+						table+= "<td style='width:10%'>";
+						if(scorelist[j].status=='f'){
+							table+="<button type='button' onClick=\"checkStatus('"+scorelist[j].score_id+"','t')\" class='btn ink-reaction btn-floating-action btn-xs btn-danger btn-status'  data-toggle='tooltip' data-placement='top' title='Disabled'><i class='md md-close'></i></button>";
+							
+						}else{
+							table+="<button type='button' onClick=\"checkStatus('"+scorelist[j].score_id+"','f')\" class='btn ink-reaction btn-floating-action btn-xs btn-info btn-status'  data-toggle='tooltip' data-placement='top' title='Enabled'><i class='md md-check'></i></button>";
+						}
+					} 
+				}
+			if(scorelist==""||ck==false){
+				table+="<td><input type='number' min='0' max='10' id='vob' class='form-control vob_"+data[i].student_id+"' required value='0' disabled></td>"+
+				"<td><input type='number' min='0' max='10' id='gr' class='form-control gr_"+data[i].student_id+"' required value='0' disabled></td>"+
+				"<td><input type='number' min='0' max='10' id='re' class='form-control re_"+data[i].student_id+"' required value='0' disabled></td>"+
+				"<td><input type='number' min='0' max='10' id='wr' class='form-control wr_"+data[i].student_id+"' required value='0' disabled></td>"+
+				"<td><input type='number' min='0' max='10' id='li' class='form-control li_"+data[i].student_id+"' required value='0' disabled></td>"+
+				"<td><input type='number' min='0' max='10' id='sp' class='form-control sp_"+data[i].student_id+"' required value='0' disabled></td>"+
+				"<td><input type='number' min='0' max='10' id='pa' class='form-control pa_"+data[i].student_id+"' required value='0' disabled></td>"+
+				"<td><input type='number' min='0' max='10' id='ma' class='form-control ma_"+data[i].student_id+"' required value='0' disabled></td>"+
+				"<td><input type='number' min='0' max='5' id='cl' class='form-control cl_"+data[i].student_id+"' required value='0' disabled></td>";
+				table+= "<td style='width:10%'>";
+			}
+			
+			table+=	"<button type='button' class='btn ink-reaction btn-floating-action btn-xs btn-warning "+data[i].id_card+"' data-toggle='tooltip' data-placement='top' title='Edit' onClick=\"edit('"+data[i]['student_id']+"','"+data[i].id_card+"')\" ><i class='md md-mode-edit'></i></button>"+
+					"<button type='button' class='btn ink-reaction btn-floating-action btn-xs btn-primary "+data[i].id_card+"' data-toggle='tooltip' data-placement='top' title='Save' disabled onClick=\"Save('"+data[i]['student_id']+"','"+data[i].id_card+"')\" ><i class='md md-save'></i></button>"+
+					"</td>"+
+				"</tr>";
+			}
+			table+="</tbody></table>";
+			return table;
+		}
+		function edit(class_f,class_self){
+			$("[class*='_"+class_f+"']").attr("disabled",false);
+			$(".btn-warning."+class_self).attr("disabled",true);
+			$(".btn-primary."+class_self).attr("disabled",false);
+		}
+		function Save(class_f,class_self){
+			var monthNames = ["Jan", "Feb", "Mar","Apr", "May", "Jun", "Jul","Aug", "Sep", "Oct", "Nov", "Dec"];
+			var token=($('#control-date').val()).split("/");
+			var dateinControl=token[1]+"-"+(monthNames.indexOf(token[0])+1)+"-1";
+			var vob=$(".vob_"+class_f).val();
+			var gr=$(".gr_"+class_f).val();
+			var re=$(".re_"+class_f).val();
+			var wr=$(".wr_"+class_f).val();
+			var li=$(".li_"+class_f).val();
+			var sp=$(".sp_"+class_f).val();
+			var pa=$(".pa_"+class_f).val();
+			var ma=$(".ma_"+class_f).val();
+			var cl=$(".cl_"+class_f).val();
+			
+			$.ajax({
+				url:"score_submit",
+				type:"POST",
+				data:{
+					vo:vob,
+					gr:gr,
+					re:re,
+					wr:wr,
+					li:li,
+					sp:sp,
+					pa:pa,
+					ma:ma,
+					cl:cl,
+					month:dateinControl,
+					student_id:class_f,
+					sub_prog_id:$("#select-subprog").val()
+				},
+				beforeSend: function() {
+  					$("body").append("<div class='sweet-overlay' tabindex='-1' style='opacity: 1.09; display: block;width:100%; text-align:center;' id='loading'><i class='fa fa-spinner faa-spin animated' style='font-size:90px;margin-top:15%;color:black;'></i></div>");
+  			    },
+  				complete: function(){
+  					$("#loading").remove();
+  				},
+				success:function(data){				
+						alertify.logPosition("bottom right");
+					if(data=="true"){
+						alertify.success("SUBMIT SUCCESSFULLY !");
+						$("[class*='_"+class_f+"']").attr("disabled",true);
+						$(".btn-warning."+class_self).attr("disabled",false);
+						$(".btn-primary."+class_self).attr("disabled",true);
+					}else{
+						swal('FAILED!','Unable to submit','error');
+					}
+				}
+			});
+			
+		}
+		function checkStatus(score_id,status){
+			
+			$.ajax({
+				url:"score_status",
+				type:"POST",
+				data:{
+					score_id:score_id,
+					status:status
+				},
+				success:function(data){
+					alertify.logPosition("bottom right");
+					if(data=="true"){
+						alertify.success("STATUS HAS BEEN CHANGED !");
+						listStudInfo();
+					}else{
+						
+						swal('FAILED!','Status unable change','error');
+					}
+					
+				}
+			});      
+			
+		}
+		function callJTable(){
+			$('#tb_list').DataTable();
+			$('[data-toggle="tooltip"]').tooltip();
+		}
+    </script>
 
-        </script>
 </body>
 </html>

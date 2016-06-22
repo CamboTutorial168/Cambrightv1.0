@@ -8,8 +8,6 @@ import java.util.ArrayList;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
-import org.postgresql.util.PSQLException;
-
 import controller.admin.Conn;
 
 public class AttendanceEmpDAO {
@@ -24,8 +22,6 @@ public class AttendanceEmpDAO {
 			String sql=null;
 			try{
 				sql="SELECT emp_id,id_card,english_name,image_url FROM tb_employees em"
-						+ " JOIN tb_positions po"
-						+ " ON em.pos_id=po.pos_id"
 						+ " JOIN tb_users_level u"
 						+ " ON u.user_id=em.user_id"
 						+ " JOIN tb_branches b"
@@ -99,4 +95,5 @@ public class AttendanceEmpDAO {
 			}
 			return false;
 		}
+		//
 }

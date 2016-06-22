@@ -247,27 +247,26 @@ table.dataTable span.highlight {
 			return list;
 		}
 		function listClass(subprog_id) {
-			$
-					.ajax({
-						url : "classlist.json",
-						type : "POST",
-						beforeSend : function() {
-							$("body")
-									.append(
-											"<div class='sweet-overlay' tabindex='-1' style='opacity: 1.09; display: block;width:100%; text-align:center;' id='loading'><i class='fa fa-spinner faa-spin animated' style='font-size:90px;margin-top:15%;color:black;'></i></div>");
-						},
-						complete : function() {
-							$("#loading").remove();
-						},
-						success : function(data) {
+			$.ajax({
+				url : "classlist.json",
+				type : "POST",
+				beforeSend : function() {
+					$("body")
+							.append(
+									"<div class='sweet-overlay' tabindex='-1' style='opacity: 1.09; display: block;width:100%; text-align:center;' id='loading'><i class='fa fa-spinner faa-spin animated' style='font-size:90px;margin-top:15%;color:black;'></i></div>");
+				},
+				complete : function() {
+					$("#loading").remove();
+				},
+				success : function(data) {
 
-							$("#select-class").html(listClassSupply(data, subprog_id)).change();
-							$("#select-class").select2();
-						},
-						error : function(jqXHR, exception) {
-							catchErr(jqXHR, exception);
-						}
-					});
+					$("#select-class").html(listClassSupply(data, subprog_id)).change();
+					$("#select-class").select2();
+				},
+				error : function(jqXHR, exception) {
+					catchErr(jqXHR, exception);
+				}
+			});
 		}
 
 		function listClassSupply(data) {
@@ -432,7 +431,6 @@ table.dataTable span.highlight {
 					
 				});
 				var js="{\"data\":["+arr+"]}";
-				console.log(js);
 				 if(js!=null){
 					$.ajax({
 						url:"period_change",
