@@ -1,11 +1,14 @@
 
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
+<%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <!DOCTYPE html>
 <html>
 <head>
 <title>CAMBRIGHT | Program Management</title>
-
+<c:if test="${adminsession.user_level >2 }">
+	<c:redirect url="/admin"></c:redirect>
+</c:if>
 <!-- BEGIN META -->
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -59,6 +62,7 @@
 								<div
 									class="card-head card-head-sm card-body style-info no-padding">
 									<header>PROGRAM LIST</header>
+<c:if test="${adminsession.user_level==0}">									
 									<div class="tools">
 										<span data-toggle="modal" data-target=".open-modal"
 											data-backdrop="static" data-keyboard="false"> <a
@@ -67,6 +71,7 @@
 											title="Create more" href="#"><i class="fa fa-plus"></i></a>
 										</span>
 									</div>
+</c:if>									
 								</div>
 								<!--end .card-head -->
 								<div class="card-body">
@@ -218,12 +223,14 @@
 
 	<script type="text/javascript">
 		$("#addsubprog").addClass("active");
-		listMainProg();
+		
 		listSubProg();
 		function callJTable(){
 			$('table').DataTable();
 		}
-
+		
+"<c:if test='${adminsession.user_level==0}'>"
+		listMainProg();
 		function addSubProg() {
 			
 				$.ajax({
@@ -249,6 +256,7 @@
 					success : function(data) {
 						alertify.logPosition("bottom right");
 						if(data=="true"){
+							reset();
 							alertify.success("CREATE SUCCESSFULLY !");
 							listSubProg();
 						}else{
@@ -258,7 +266,6 @@
 				});
 			
 		}
-		
 		function listMainProg(){
 			$.ajax({
 				url:"progmainlist.json",
@@ -290,7 +297,11 @@
 			}
 			return list;
 		}
-		
+"</c:if>"	
+
+
+
+
 		//LIST TABLE
 		function listSubProg(){
 			$.ajax({
@@ -335,7 +346,7 @@
 					"<tbody>";
 			for(var i=0;i<data.length;i++){
 				table+="<tr>"+
-						"<td><span class='badge style-accent'>"+data[i].branch_name+"</span></td>"+
+						"<td><span class='badge' style='background-color:"+data[i].branch_color+"'>"+data[i].branch_name+"</span></td>"+
 						"<td>"+data[i].prog_title+"</td>"+
 						"<td>"+data[i].sub_prog_title+"</td>"+
 						"<td>"+"$"+data[i].term_fee+"</td>"+
@@ -344,10 +355,12 @@
 						"<td>"+data[i].amstart+"-"+data[i].amend+"</td>"+
 						"<td>"+data[i].pmstart+"-"+data[i].pmend+"</td>"+
 						"<td>";
+						"<c:if test='${adminsession.user_level==0}'>"
 						table+="<span data-toggle='modal' data-target='.open-modal' data-backdrop='static' data-keyboard='false'>"+
-								"<button type='button'class='btn ink-reaction btn-floating-action btn-xs btn-warning'data-toggle='tooltip' data-placement='top' title='edit' onClick=\"edit('"+data[i].subprog_id+"','"+data[i].sub_prog_title+"','"+data[i].term_fee+"','"+data[i].sem_fee+"','"+data[i].year_fee+"','"+data[i].prog_id+"','"+data[i].amstart+"','"+data[i].amend+"','"+data[i].pmstart+"','"+data[i].pmend+"')\"><i class='fa fa-edit'></i></button>"+
+								"<button type='button' class='btn ink-reaction btn-floating-action btn-xs btn-warning' data-toggle='tooltip' data-placement='top' title='edit' onClick=\"edit('"+data[i].subprog_id+"','"+data[i].sub_prog_title+"','"+data[i].term_fee+"','"+data[i].sem_fee+"','"+data[i].year_fee+"','"+data[i].prog_id+"','"+data[i].amstart+"','"+data[i].amend+"','"+data[i].pmstart+"','"+data[i].pmend+"')\"><i class='fa fa-edit'></i></button>"+
 							   "</span>"+
 							   "<button type='button'class='btn ink-reaction btn-floating-action btn-xs btn-danger'data-toggle='tooltip' data-placement='top' title='Remove' onClick=\"isDelete('"+data[i].subprog_id+"','"+data[i].prog_id+"')\"><i class='fa fa-trash'></i></button>"+
+						"</c:if>"	   
 						"</td>"+
 					"</tr>";
 				
@@ -358,6 +371,9 @@
 			return table;
 		}
 		
+		
+		
+"<c:if test='${adminsession.user_level==0}'>"				
 		function edit(subprog_id,subprog_title,term,sem,year,prog_id,amst,amend,pmst,pmend){
 			
 			$('#btn-create').css("display","none");
@@ -442,6 +458,7 @@
 				success:function(data){
 					alertify.logPosition("bottom right");
 					if(data=="true"){
+						reset();
 						alertify.success("UPDATE SUCCESSFULLY !");
 						listSubProg();
 					}else{
@@ -479,6 +496,10 @@
 			$("#year").val("").change();
 			
 		}
+		$(".btn-warning").on("click",function(){
+			reset();
+		});
+"</c:if>"
 	</script>
 </body>
 </html>

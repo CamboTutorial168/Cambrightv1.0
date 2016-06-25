@@ -165,9 +165,12 @@
 						</div>
 						<!-- BEGIN NEW REGISTRATIONS -->
 						<div class="col-md-4">
-							<div class="card">
-								<div class="card-body">
-									<div id="piechart" style="width: 100%; height: 410px;"></div>
+							<div class="card card-outlined style-primary-dark">
+								<div class="card-head card-head-sm style-primary-dark">
+									<header>Students Nearly Expired</header>
+								</div>
+								<div class="card-body no-padding height-10 scroll" >
+									<div id="piechart" style="width: 100%; height: 310px;"></div>
 								</div>
 								<!--end .card-body -->
 							</div>

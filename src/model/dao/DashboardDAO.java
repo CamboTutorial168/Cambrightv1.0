@@ -16,13 +16,22 @@ public class DashboardDAO {
 	public DashboardDAO() {
 		con=new Conn().getConnection();
 	}
-	
-	public int getActiveStudent() throws SQLException{
+	//For Receptionist and Manager
+	public int getActiveStudent(String branch_id,int user_type) throws SQLException{
 		int std = 0;
-		String sql="SELECT count(id_card) FROM tb_students WHERE status='t';";
+		String sql="SELECT count(id_card) FROM tb_students s"
+				+ " JOIN tb_branch b"
+				+ " ON b.branch_id=s.branch_id"
+				+ " WHERE s.status='t' AND b.status='t'";
 		
 		try {
+			if(user_type!=0){
+				sql+="AND e.branch_id=?::uuid";
+			}
 			pst=con.prepareStatement(sql);
+			if(user_type!=0){
+				pst.setString(1, branch_id);
+			}
 			ResultSet rs=pst.executeQuery();
 			while(rs.next()){
 				std=rs.getInt(1);
@@ -35,11 +44,21 @@ public class DashboardDAO {
 		
 		return std;
 	}
-	public int getActiveEmployees() throws SQLException{
+	
+	public int getActiveEmployees(String branch_id,int user_type) throws SQLException{
 		int emp=0;
-		String sql="SELECT count(id_card) FROM tb_employees WHERE status='t'";
+		String sql="SELECT count(id_card) FROM tb_employees e"
+				+ " JOIN tb_branch b"
+				+ " ON b.branch_id=e.branch_id"
+				+ " WHERE e.status='t' AND b.status='t'";
 		try {
+			if(user_type!=0){
+				sql+="AND e.branch_id=?::uuid";
+			}
 			pst=con.prepareStatement(sql);
+			if(user_type!=0){
+				pst.setString(1, branch_id);
+			}
 			ResultSet rs=pst.executeQuery();
 			while(rs.next()){
 				emp=rs.getInt(1);
@@ -51,25 +70,36 @@ public class DashboardDAO {
 		}
 		return emp;
 	}
-	public String getAbsentEmp() throws SQLException{
+	
+	public String getAbsentEmp(String branch_id,int user_type) throws SQLException{
 		String abemp=null;
-		String sql="SELECT check_absentemp()";
+		String sql="SELECT count(*) FROM tb_attendantemp ate"
+				+ " JOIN tb_employees e"
+				+ " ON e.emp_id=ate.emp_id"
+				+ " WHERE is_absent IN ('a','g')"
+				+ " AND att_date=NOW()::DATE ";
 		try{
+			if(user_type!=0){
+				sql+="AND e.branch_id=?::uuid";
+			}
 			pst=con.prepareStatement(sql);
+			if(user_type!=0){
+				pst.setString(1, branch_id);
+			}
 			ResultSet rs=pst.executeQuery();
 			while(rs.next()){
 				abemp=rs.getString(1);
 			}
-			
 		}catch(Exception e){e.printStackTrace();}
 		finally{
 			pst.close();
 			if(con!=null)con.close();
 		}
-		
 		return abemp;
 	}
-	public int getDiactiveCourse() throws SQLException{
+	
+	//For Manager Only
+	public int getClassRoomAvaliable(String branch_id,int user_type) throws SQLException{
 		int disactive=0;
 		String sql="SELECT COUNT(level) FROM tb_prog_type WHERE status='f';";
 		try{
@@ -87,17 +117,25 @@ public class DashboardDAO {
 		
 		return disactive;
 	}
-	public ArrayList<ChartDTO> getForChartCol() throws SQLException{
+	
+	//Only Accountant
+	public ArrayList<ChartDTO> getForChartCol(String branch_id) throws SQLException{
 		ArrayList<ChartDTO> data=new ArrayList<>();
-		String sql="SELECT * FROM v_barchart_stu";
+		String sql="SELECT count(s.gender='F') as quanlity ,"
+				+ " CASE WHEN (s.gender = 'M') THEN 'Male' ELSE 'Female' END AS gender,"
+				+ "b.branch_name"
+				+ " FROM tb_branches b"
+				+ " FULL JOIN tb_students s"
+				+ " ON s.branch_id=b.branch_id"
+				+ " WHERE b.branch_id =?::uuid GROUP BY b.branch_name,s.gender";
 		try{
 			pst=con.prepareStatement(sql);
 			ResultSet rs=pst.executeQuery();
 			while(rs.next()){
 				ChartDTO chart=new ChartDTO();
-				chart.setBranch(rs.getString(1));
-				chart.setGender(rs.getString(2));
-				chart.setQuantity(rs.getString(3));
+				chart.setBranch(rs.getString("branch_name"));
+				chart.setGender(rs.getString("gender"));
+				chart.setQuantity(rs.getString("quanlity"));
 				data.add(chart);
 			}
 		}catch(Exception e){e.printStackTrace();}
@@ -145,8 +183,5 @@ public class DashboardDAO {
 		
 		return null;
 	}
-	public static void main(String[] args) throws SQLException {
-		System.out.println(new DashboardDAO().getAllNewStudent());
-	}
-		
+
 }

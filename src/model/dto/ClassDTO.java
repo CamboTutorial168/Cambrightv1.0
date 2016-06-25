@@ -9,6 +9,7 @@ public class ClassDTO {
 	private String sub_prog_title;
 	private String branch_id;
 	private String branch_name;
+	private String branch_color;
 	public String getClass_id() {
 		return class_id;
 	}
@@ -50,6 +51,12 @@ public class ClassDTO {
 	}
 	public void setBranch_name(String branch_name) {
 		this.branch_name = branch_name;
+	}
+	public String getBranch_color() {
+		return branch_color;
+	}
+	public void setBranch_color(String branch_color) {
+		this.branch_color = branch_color;
 	}
 	@Override
 	public String toString() {

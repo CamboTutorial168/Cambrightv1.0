@@ -2,6 +2,7 @@ package model.dto;
 
 public class UserDTO {
 	private String emp_id;
+	private String student_id;
 	private String id_card;
 	private String pwd;
 	private String kh_name;
@@ -12,11 +13,13 @@ public class UserDTO {
 	private String national_id;
 	private String img_url;
 	private String phone;
+	private String reg_date;
 	private String hire_date;
 	private String mod_date;
 	private String status;
 	private String branch_id;
 	private String branch_name;
+	private String b_color;
 	private String pos_id;
 	private String position;
 	private String email;
@@ -72,6 +75,18 @@ public class UserDTO {
 	public void setNationality(String nationality) {
 		this.nationality = nationality;
 	}
+	public String getStudent_id() {
+		return student_id;
+	}
+	public void setStudent_id(String student_id) {
+		this.student_id = student_id;
+	}
+	public String getReg_date() {
+		return reg_date;
+	}
+	public void setReg_date(String reg_date) {
+		this.reg_date = reg_date;
+	}
 	public String getNational_id() {
 		return national_id;
 	}
@@ -89,6 +104,12 @@ public class UserDTO {
 	}
 	public void setPhone(String phone) {
 		this.phone = phone;
+	}
+	public String getB_color() {
+		return b_color;
+	}
+	public void setB_color(String b_color) {
+		this.b_color = b_color;
 	}
 	public String getHire_date() {
 		return hire_date;

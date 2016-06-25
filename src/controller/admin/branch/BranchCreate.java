@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import model.dao.BranchDAO;
 import model.dto.BranchDTO;
+import model.dto.UserDTO;
 
 /**
  * Servlet implementation class Branch
@@ -38,6 +39,7 @@ public class BranchCreate extends HttpServlet {
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		try{
+			int user_level=((UserDTO)(request.getSession().getAttribute("adminsession"))).getUser_level();
 			BranchDTO branch=new BranchDTO(
 					request.getParameter("branch_name"),
 					request.getParameter("address"),
@@ -46,10 +48,14 @@ public class BranchCreate extends HttpServlet {
 					request.getParameter("color")
 					);
 			response.setContentType("text/plain");
-			if(new BranchDAO().createBranch(branch)==true){
-				response.getWriter().write("true");
-			}else{
-				response.getWriter().write("false");
+			
+			
+			if(user_level==0){
+				if(new BranchDAO().createBranch(branch)==true){
+					response.getWriter().write("true");
+				}else{
+					response.getWriter().write("false");
+				}
 			}
 			
 		}catch(Exception e){e.printStackTrace();}

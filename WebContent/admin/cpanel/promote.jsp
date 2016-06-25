@@ -1,11 +1,14 @@
 
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
+<%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>	
 <!DOCTYPE html>
 <html>
 <head>
 <title>CAMBRIGHT | Student Promote Class</title>
-
+<c:if test="${adminsession.user_level >2 }">
+	<c:redirect url="/admin"></c:redirect>
+</c:if>
 <!-- BEGIN META -->
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -285,8 +288,7 @@
          	
          	function listBranch(){
 	  			$.ajax({
-	  				url:"branchlistactive.json",
-	  				dataType:"json",
+	  				url:"branchlistactivebranch.json",
 	  				type:"POST",
 	  				
 	  				beforeSend: function() {
@@ -410,8 +412,6 @@
    	     function listClassSupply(data){
    	     var clinB=classInBranch(data);
    	     var tinB= teachInBranch(listTeaching);
-   	  	 console.log(clinB);
-   	     console.log(tinB);
    	     var cAval = classAvaliable(tinB,clinB);
           	 var list = "";
     		 var lent=cAval.length;

@@ -1,11 +1,14 @@
 
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
+<%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>	
 <!DOCTYPE html>
 <html>
 <head>
 <title>CAMBRIGHT | Employees Register</title>
-
+<c:if test="${adminsession.user_level >2 }">
+	<c:redirect url="/admin"></c:redirect>
+</c:if>
 <!-- BEGIN META -->
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -509,10 +512,11 @@ img.preview {
         	 format: 'yyyy/mm/dd',
          });
           var image_name;
-          listLv();
-          listPosition();
-          listBranch();
           getEmpList();
+          listBranch();
+          listPosition();
+          listLv();
+          
           function readURL(input) {
         	 
         	    var file=$("input[type=file]")[0].files[0];
@@ -596,7 +600,7 @@ img.preview {
          }
         function listBranch(){
 			$.ajax({
-				url:"branchlistactive.json",
+				url:"branchlistactivebranch.json",
 				type:"POST",
 				beforeSend: function() {
 					$("body").append("<div class='sweet-overlay' tabindex='-1' style='opacity: 1.09; display: block;width:100%; text-align:center;' id='loading'><i class='fa fa-spinner faa-spin animated' style='font-size:90px;margin-top:15%;color:black;'></i></div>");
@@ -680,7 +684,7 @@ img.preview {
  			}else{
  				swal('WARNING!','Choose an image profile','warning');
  			}
- 	    	console.log("After "+image_name);
+ 	    	
         });
        
         
@@ -750,7 +754,7 @@ img.preview {
         }
         
         function userCreate(){
-        	console.log(image_name);
+        	
         	$.ajax({
         		url:"emp_create",
         		method:"POST",
@@ -797,23 +801,23 @@ img.preview {
     		var card = $(e.currentTarget).closest('.card');
     		materialadmin.AppCard.addCardLoader(card);
     		setTimeout(function () {
-    			listLv();
+    			
     	        listPosition();
     	        listBranch();
     			materialadmin.AppCard.removeCardLoader(card);
-    		}, 1500);
+    		}, listLv());
 		});
         $('.card-head .tools .btn-refresh-list').on('click', function (e) {
     		var card = $(e.currentTarget).closest('.card');
     		materialadmin.AppCard.addCardLoader(card);
     		setTimeout(function () {
-    			getEmpList();
+    			
     			materialadmin.AppCard.removeCardLoader(card);
-    		}, 1500);
+    		}, getEmpList());
 		});
         //LIST EMP
         
-        getEmpList();
+       
          function getEmpList(){
         	 $.ajax({
         		url:"emplist.json",
@@ -826,6 +830,7 @@ img.preview {
 					$("#loading").remove();
 				},
         		success:function(data){
+        			
         			$("#list").html(getEmpListSupply(data));
         			callJTable();
         			$('[data-toggle="tooltip"]').tooltip();
@@ -844,6 +849,7 @@ img.preview {
 								"<th>GENDER</th>"+
 								"<th class='sort-alpha'>USER LEVEL</th>"+
 								"<th class='sort-numeric'>POSITION</th>"+
+								"<th class='sort-numeric'>BRANCH</th>"+
 								"<th class='sort-numeric'>PHONE</th>"+
 								"<th class='sort-numeric'>EMAIL</th>"+
 								"<th>ACTION</th>"+
@@ -851,6 +857,7 @@ img.preview {
 					   "</thead>"+
 					   "<tbody>";
 				for(var i=0;i<data.length;i++){
+					
 					table+= "<tr>"+
 								"<td>"+data[i]['id_card']+"</td>"+
 								"<td>"+data[i]['eng_name']+"</td>"+
@@ -865,6 +872,7 @@ img.preview {
 								table+="</span></td>"+
 								
 								"<td><span class='badge style-accent-bright'>"+data[i]['position']+"</span></td>"+
+								"<td><span class='badge' style='background-color:"+data[i]['b_color']+"'>"+data[i]['branch_name']+"</span></td>"+
 								"<td>"+data[i]['phone']+"</td>"+
 								"<td>"+data[i]['email']+"</td>"+
 								"<td>";

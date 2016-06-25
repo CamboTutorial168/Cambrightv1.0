@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import model.dao.ClassesDAO;
 import model.dto.ClassDTO;
+import model.dto.UserDTO;
 
 /**
  * Servlet implementation class ClassCreate
@@ -27,21 +28,18 @@ public class ClassCreate extends HttpServlet {
     }
 
 	/**
-	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
-	 */
-	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-	}
-
-	/**
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		try{
+			int user_level=((UserDTO)(request.getSession().getAttribute("adminsession"))).getUser_level();
+			
 			ClassDTO clas=new ClassDTO();
 			clas.setClass_title(request.getParameter("class_title"));
 			clas.setClass_color(request.getParameter("class_color"));
 			clas.setSub_prog_id(request.getParameter("sub_prog_id"));
 			response.setContentType("text/plain");
+			
 			if(new ClassesDAO().createClass(clas)==true){
 				response.getWriter().write("true");
 			}else{

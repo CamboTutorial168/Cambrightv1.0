@@ -1,5 +1,5 @@
 	
-//var websocket=new WebSocket("ws://"+rootip+":8080/CamBrightv1.0/socket"); //ws://localhost:8080/ProjectName/annotation.  @ServerEndpoint("/chating")
+var websocket=new WebSocket("ws://"+rootip+":8080/CamBrightv1.0/socket"); //ws://localhost:8080/ProjectName/annotation.  @ServerEndpoint("/chating")
 	var inter;
      websocket.onopen=function(message){
     	/* console.log("open:");
@@ -66,10 +66,14 @@
     		 
      		 for(var i=1;i<data.length;i++){
      			 var li=$('<li class="tile" id="user'+data[i]["emp_id"]+'"></li>');
-     			 
      			 var a=$('<a class="tile-content ink-reaction"  data-toggle="offcanvas" data-backdrop="false"></a>');
      			 var divtitle=$('<div class="tile-icon"></div>');
-     			 var img=$('<img src='+rootpath+'/admin/cpanel/img/emp/'+data[i]["image_url"]+'>');
+     			 var img;
+     			 if(data[i]['user_mode']=="employee"){
+     				  img=$('<img src='+rootpath+'/admin/cpanel/img/emp/'+data[i]["image_url"]+' data-toggle="tooltip" data-placement="right" title="Employee">');
+     			 }else{
+     				img=$('<img src='+rootpath+'/img/stud/'+data[i]["image_url"]+' data-toggle="tooltip" data-placement="right" title="Student">');
+     			 }
      			 var text=$('<div class="tile-text"></div>');
      			 var status=$('<span class="pull-right"><i data-toggle="tooltip" data-placement="left" title="Online" class="md md-brightness-1" style="color: #009e1d;font-size:12px"></i></span>');
      			 
@@ -86,7 +90,7 @@
      		 }
      		
      		
-     			getAutoplay();
+     			//getAutoplay();
      		
     	 }
     	 $('[data-toggle="tooltip"]').tooltip();

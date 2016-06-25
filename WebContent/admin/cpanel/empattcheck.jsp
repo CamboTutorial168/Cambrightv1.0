@@ -1,11 +1,14 @@
 
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
+<%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>	
 <!DOCTYPE html>
 <html>
 <head>
 <title>CAMBRIGHT | Employees Attendant Checking</title>
-
+<c:if test="${adminsession.user_level>2 }">
+	<c:redirect url="/admin"></c:redirect>
+</c:if>
 <!-- BEGIN META -->
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -174,23 +177,34 @@
 
 		
 		$('#ck-att').on("click",function(){
-			var attent=[];
-			$("[class*='ck_']").each(function(index,obj){
-				var x = $(this).val();
-				
-				if($(this).prop('checked')==true){
-					x=x.substr(0,x.length);
-					//x+=",'prog_type_id':'"+$('#list-lv').val()+"'}";
-				}else{
-					x=x.substr(0,x.length-16);
-					x+="'is_absent':'a'}";
-				}
-				x=x.replace(/'/g , "\"");
-				x=JSON.parse(x);
-				attent.push(x);
-				
+			swal({   
+    			 title: "Are you sure?",   
+   				 text: "You will not be able to recovery this action!",   
+   				 type: "warning",   
+   				 showCancelButton: true,   
+   				 confirmButtonColor: "#DD6B55",   
+   				 confirmButtonText: "Yes, I am!",   
+   				 closeOnConfirm: false 
+   	   		    }, function(){
+					var attent=[];
+					$("[class*='ck_']").each(function(index,obj){
+						var x = $(this).val();
+						
+						if($(this).prop('checked')==true){
+							x=x.substr(0,x.length);
+							//x+=",'prog_type_id':'"+$('#list-lv').val()+"'}";
+						}else{
+							x=x.substr(0,x.length-16);
+							x+="'is_absent':'a'}";
+						}
+						x=x.replace(/'/g , "\"");
+						x=JSON.parse(x);
+						attent.push(x);
+						
+					});
+					submitAtt(JSON.stringify(uniqueFilter(attent)));
+					
 			});
-			submitAtt(JSON.stringify(uniqueFilter(attent)));
 			
 		});
 		function uniqueFilter(obj){
@@ -254,7 +268,7 @@
         //FILTER BRANCH
         function listBranch(){
  			$.ajax({
- 				url:"branchlistactive.json",
+ 				url:"branchlistactivebranch.json",
  				type:"POST",
  				beforeSend: function() {
  					$("body").append("<div class='sweet-overlay' tabindex='-1' style='opacity: 1.09; display: block;width:100%; text-align:center;' id='loading'><i class='fa fa-spinner faa-spin animated' style='font-size:90px;margin-top:15%;color:black;'></i></div>");

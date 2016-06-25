@@ -35,8 +35,9 @@ public class UserLevelList extends HttpServlet {
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		try{
-			String u_type=((UserDTO)(request.getSession().getAttribute("adminsession"))).getUser_type();
-			ArrayList<UserLevelDTO> List=new UserLevelDAO().getUserLevel(u_type);
+			int user_level=((UserDTO)(request.getSession().getAttribute("adminsession"))).getUser_level();
+			String	branch_id=((UserDTO)(request.getSession().getAttribute("adminsession"))).getBranch_id();
+			ArrayList<UserLevelDTO> List=new UserLevelDAO().getUserLevel(branch_id,user_level);
 			String json=new Gson().toJson(List);
 			response.setCharacterEncoding("UTF-8");
 			response.setContentType("application/json");

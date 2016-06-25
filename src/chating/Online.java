@@ -6,6 +6,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.servlet.http.HttpSession;
 import javax.websocket.EndpointConfig;
 import javax.websocket.OnClose;
 import javax.websocket.OnError;
@@ -20,11 +21,10 @@ public class Online {
 	
 	   @OnOpen
 	   public void handleOpen(EndpointConfig endpointConfig, Session userSession){
-		   System.out.println("Size chater: "+chater.size());
+		  
 		   try{ 
 		   userSession.getUserProperties().put("emp_id", (String)endpointConfig.getUserProperties().get("emp_id"));
 		   userSession.getUserProperties().put("english_name", (String)endpointConfig.getUserProperties().get("english_name"));
-	  
 		    chater.put(userSession.getUserProperties().get("emp_id").toString(),userSession);   
 		    
 		    Map<String, Session> map= chater;
@@ -34,6 +34,7 @@ public class Online {
 					json+="{'emp_id':'"+u.getValue().getUserProperties().get("emp_id")+"'"+
 						 ",'english_name':'"+u.getValue().getUserProperties().get("english_name")+"'"+
 						 ",'image_url':'"+u.getValue().getUserProperties().get("image_url")+"'"+
+						 ",'user_mode':'"+u.getValue().getUserProperties().get("user_mode")+"'"+
 						 "},";
 		
 			}

@@ -1,56 +1,80 @@
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <div id="menubar" class="menubar-inverse ">
 
 	<div class="menubar-scroll-panel">
 
 		<!-- BEGIN MAIN MENU -->
 		<ul id="main-menu" class="gui-controls">
-
+<c:if test="${adminsession.user_level<4 }">
 			<!-- BEGIN DASHBOARD -->
-			<li><a
-				href="${pageContext.servletContext.contextPath }/admin/cpanel/dashboard"
-				id="dashboard">
+			<li>
+
+			<a href="${pageContext.servletContext.contextPath }/admin/cpanel/dashboard"	id="dashboard">
 					<div class="gui-icon">
 						<i class="md md-home"></i>
 					</div> <span class="title">DASHBOARD</span>
-			</a></li>
+			</a>
+			</li>
+</c:if>
+<c:if test="${adminsession==null}">
+	<li>
+		<a href="${pageContext.servletContext.contextPath }/user/dashboard"	id="dashboard">
+				<div class="gui-icon">
+					<i class="md md-home"></i>
+				</div> <span class="title">DASHBOARD</span>
+		</a>
+	</li>
+</c:if>
 			<!--end /menu-li -->
 			<!-- END DASHBOARD -->
-
 			<!-- BEGIN BRANCH -->
+<c:if test="${adminsession.user_level==0 }">
 			<li><a href="branchmgnt" id="branchmgnt">
 					<div class="gui-icon">
 						<i class="md md-location-on"></i>
 					</div> <span class="title">BRANCH</span>
 			</a></li>
+</c:if>
 			<!--end /menu-li -->
 			<!-- END BRANCH -->
 
 			<!-- END CLASS -->
+<c:if test="${adminsession.user_level<2 }">			
 			<li class="gui-folder"><a>
 					<div class="gui-icon">
 						<i class="fa fa-university"></i>
 					</div> <span class="title">PROGRAM & CLASSROOM</span>
 			</a> <!--start submenu -->
 				<ul>
+<c:if test="${adminsession.user_level==0 }">				
 					<li><a href="addmainprog.jsp" id="mainprog"><span
 							class="title">Main Program Management</span></a></li>
+</c:if>
+<c:if test="${adminsession.user_level<3 }">						
 					<li><a href="addsubprog.jsp" id="addsubprog"><span
 							class="title">Sub Program Management</span></a></li>
+</c:if>							
 					<!-- <li><a href="time.jsp" id="schedual"><span
 							class="title">Time match Class</span></a></li> -->
 				</ul> <!--end /submenu --></li>
+</c:if>				
 			<!--end /menu-li -->
+<c:if test="${adminsession.user_level<3 }">			
 			<li><a href="createclass.jsp" id="createclass">
 					<div class='gui-icon'>
 						<i class="fa fa-building"></i>
 					</div> <span class="title">CLASSROOM MANAGEMENT</span>
 			</a></li>
+</c:if>			
+<c:if test="${adminsession.user_level==0 }">
 			<li><a href="addposition.jsp" id="addposition">
 					<div class='gui-icon'>
 						<i class="md md-perm-identity"></i>
 					</div> <span class="title">POSITIONS MANAGEMENT</span>
 			</a></li>
+</c:if>	
 			<!-- BEGIN STAFF -->
+<c:if test="${adminsession.user_level<3 }">					
 			<li class="gui-folder"><a>
 					<div class="gui-icon">
 						<i class="md md-people"></i>
@@ -62,9 +86,11 @@
 					<li><a href="teachtask.jsp" id="teachtask"><span
 							class="title">Teacher Task</span></a></li>
 				</ul></li>
+</c:if>				
 			<!--end /menu-li -->
 			<!-- END STAFF -->
 			<!-- BEGIN STUDENT -->
+<c:if test="${adminsession.user_level<3 }">					
 			<li class="gui-folder"><a>
 					<div class="gui-icon">
 						<i class="md md-school"></i>
@@ -84,7 +110,7 @@
 					<li><a href="studlist.jsp" id="studlist"><span
 							class="title">List All Students</span></a></li> -->
 				</ul></li>
-
+</c:if>
 			<!-- END STUDENT -->
 
 			<!-- BEGIN FORMS -->
@@ -94,8 +120,10 @@
 					</div> <span class="title">ATTENDANT</span>
 			</a> <!--start submenu -->
 				<ul>
+<c:if test="${adminsession.user_level<3 }">						
 					<li><a href="empattcheck.jsp" id="empatt"><span
 							class="title">Employees Attendant</span></a></li>
+</c:if>							
 					<li><a href="studattcheck.jsp" id="studatt"><span
 							class="title">Students Attendant</span></a></li>
 				</ul> <!--end /submenu --></li>
@@ -107,11 +135,6 @@
 					<div class="gui-icon">
 						<i class="md md-assessment"></i>
 					</div> <span class="title">SCORE MANAGEMENT</span>
-			</a></li>
-			<li><a href="">
-					<div class="gui-icon">
-						<i class="fa fa-file-pdf-o"></i>
-					</div> <span class="title">REPORTS</span>
 			</a></li>
 		</ul>
 		<!--end .main-menu -->
@@ -164,9 +187,17 @@
 	    	}
 	    });
 		$("#fm-changepwd").submit(function(e){
+			var url_ch;
+			"<c:if test='${adminsession!=null}'> "
+				url_ch="change_pw";
+			"</c:if>"
+			"<c:if test='${studentsession!=null}'> "
+				url_ch="change_pw_stud";
+			"</c:if>"
 			e.preventDefault();
 			$.ajax({
-				url:"change_pw",
+				
+				url:url_ch,
 				method:"POST",
 				data:{
 					old_pw:$("#old-password").val(),

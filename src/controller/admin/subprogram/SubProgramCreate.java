@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import model.dao.SubProgramDAO;
 import model.dto.SubProgCreateDTO;
+import model.dto.UserDTO;
 
 /**
  * Servlet implementation class ProgramCreate
@@ -37,6 +38,7 @@ public class SubProgramCreate extends HttpServlet {
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		try{
+			int user_level=((UserDTO)(request.getSession().getAttribute("adminsession"))).getUser_level();
 			SubProgCreateDTO prog=new SubProgCreateDTO();
 			prog.setProg_id((request.getParameter("prog_id")));
 			prog.setSub_prog_title(request.getParameter("subprog_title"));
@@ -48,10 +50,12 @@ public class SubProgramCreate extends HttpServlet {
 			prog.setPmstart(request.getParameter("pmstart"));
 			prog.setPmend(request.getParameter("pmend"));
 			response.setContentType("text/plain");
-			if(new SubProgramDAO().createSubProgram(prog)==true){
-				response.getWriter().write("true");
-			}else{
-				response.getWriter().write("false");
+			if(user_level==0){
+				if(new SubProgramDAO().createSubProgram(prog)==true){
+					response.getWriter().write("true");
+				}else{
+					response.getWriter().write("false");
+				}
 			}
 			
 		}catch(Exception e){e.printStackTrace();}

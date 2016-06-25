@@ -75,6 +75,8 @@ function getPeople(people){
 			date:dateinControl
 		},
 		success:function(cklist){
+			console.log(cklist);
+			console.log(people);
 			$("#list-emp").html(getEmpSupply(people,cklist));
 		}
 	});

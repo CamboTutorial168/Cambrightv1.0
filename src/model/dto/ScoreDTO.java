@@ -13,8 +13,13 @@ public class ScoreDTO {
 	private String class_part;
 	private String month;
 	private String student_id;
+	private String stud_name;
 	private String sub_prog_id;
 	private String status;
+	private String num_absent;
+	private String num_grant;
+	private String total;
+	private String rank;
 	public String getVocab() {
 		return vocab;
 	}
@@ -86,6 +91,12 @@ public class ScoreDTO {
 	public String getMonth() {
 		return month;
 	}
+	public String getStud_name() {
+		return stud_name;
+	}
+	public void setStud_name(String stud_name) {
+		this.stud_name = stud_name;
+	}
 	public void setMonth(String month) {
 		this.month = month;
 	}
@@ -97,6 +108,30 @@ public class ScoreDTO {
 	}
 	public String getSub_prog_id() {
 		return sub_prog_id;
+	}
+	public String getNum_absent() {
+		return num_absent;
+	}
+	public void setNum_absent(String num_absent) {
+		this.num_absent = num_absent;
+	}
+	public String getNum_grant() {
+		return num_grant;
+	}
+	public void setNum_grant(String num_grant) {
+		this.num_grant = num_grant;
+	}
+	public String getTotal() {
+		return total;
+	}
+	public void setTotal(String total) {
+		this.total = total;
+	}
+	public String getRank() {
+		return rank;
+	}
+	public void setRank(String rank) {
+		this.rank = rank;
 	}
 	public void setSub_prog_id(String sub_prog_id) {
 		this.sub_prog_id = sub_prog_id;

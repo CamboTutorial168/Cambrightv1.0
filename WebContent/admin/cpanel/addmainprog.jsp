@@ -1,11 +1,14 @@
 
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
+<%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <!DOCTYPE html">
 <html>
 <head>
 <title>CAMBRIGHT | Main Program Management</title>
-
+<c:if test="${adminsession.user_level >2 }">
+	<c:redirect url="/admin"></c:redirect>
+</c:if>
 <!-- BEGIN META -->
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -58,6 +61,7 @@
 								<div
 									class="card-head card-head-sm card-body style-info no-padding">
 									<header>MAIN PROGRAM LIST</header>
+<c:if test='${adminsession.user_level==0 }'>									
 									<div class="tools">
 										<span data-toggle="modal" data-target=".open-modal"
 											data-backdrop="static" data-keyboard="false"> <a
@@ -66,6 +70,7 @@
 											title="Create more" href="#"><i class="fa fa-plus"></i></a>
 										</span>
 									</div>
+</c:if>									
 								</div>
 								<!--end .card-head -->
 								<div class="card-body">
@@ -109,7 +114,11 @@
 										CATEGORY</label>
 									<p class="help-block">Ex: Nursery Program</p>
 								</div>
-								<div class="form-group floating-label " id="listbranch"></div>
+								<div class="form-group floating-label ">
+									<select class='form-control select2-list'  data-placeholder='SELECT BRANCH' multiple id='select-branch' required>
+									
+									</select>
+								</div>
 								<div class="form-footer">
 									<div class="form-group">
 										<button type="submit" id="btn-create"
@@ -164,6 +173,7 @@
 	<script type="text/javascript">
 		$("#mainprog").addClass("active");
 		tableProgMain();
+"<c:if test='${adminsession.user_level==0}'>"		
 		listBranch();
 		function listBranch() {
 			$.ajax({
@@ -171,7 +181,7 @@
 				dataType:"json",
 				type : "POST",
 				success : function(data) {
-					$("#listbranch").html(listBranch_Supply(data));
+					$("#select-branch").html(listBranch_Supply(data));
 					$(".select2-list").select2();
 				},
 				error: function(jqXHR, exception) {
@@ -181,14 +191,17 @@
 		}
 		function listBranch_Supply(data) {
 			var list = "";
-			list += "<select class='form-control select2-list' data-placeholder='SELECT BRANCH' multiple id='select-branch' required>";
+			
 			for (var i = 0; i < data.length; i++) {
 				list += "<option value="+data[i].branch_id+">"
 						+ data[i].branch_name + "</option>";
 			}
-			list += "</select>";
 			return list;
 		}
+"</c:if>"
+
+
+
 		function tableProgMain(){
 			$.ajax({
 				url:"progmainlist.json",
@@ -233,11 +246,13 @@
 							"<td><span class='badge style-accent-light'>"+data[i].num_subprog+"</span></td>"+
 							"<td><span class='badge' style='background-color:"+data[i].br_color+"'>"+data[i].branch_name+"</span></td>"+
 							"<td>";
+							"<c:if test='${adminsession.user_level==0}'>"
 							table+="<span data-toggle='modal' data-target='.open-modal' data-backdrop='static' data-keyboard='false'>"+
-										"<button type='button'  class='btn ink-reaction btn-floating-action btn-xs btn-warning' data-toggle='tooltip' data-placement='top' title='Edit' onClick=\"edit('"+data[i].prog_id+"','"+data[i].prog_title+"','"+data[i].branch_id+"','"+data[i].branch_name+"')\" ><i class='fa fa-edit'></i></button>"+ 
+										"<button type='button'  class='btn ink-reaction btn-floating-action btn-xs btn-warning' data-toggle='tooltip' data-placement='top' title='Edit' onClick=\"edit('"+data[i].prog_id+"','"+data[i].prog_title+"','"+data[i].branch_id+"','"+data[i].branch_name+"')\"><i class='fa fa-edit'></i></button>"+ 
 							
 									"</span>"+
 									"<button type='button'  class='btn ink-reaction btn-floating-action btn-xs btn-danger' data-toggle='tooltip' data-placement='top' title='Remove' onClick=\"isDelete('"+data[i].prog_id+"','"+data[i].branch_id+"')\" ><i class='fa fa-trash'></i></button>"+
+							"</c:if>"
 							"</td>"+
 						"</tr>";
 			}
@@ -246,6 +261,15 @@
 				return "<span class='text-danger'>NO RECORD FOUND</span>";
 			return table;
 		}
+		
+		
+		
+		
+		
+		
+		
+"<c:if test='${adminsession.user_level==0}'>"
+
 		function createProgMain(){
 			 $.ajax({
 				url:"prog_main_create",
@@ -257,6 +281,7 @@
 				success:function(data){
 					alertify.logPosition("bottom right");
 					if(data=="true"){
+						reset();
 						tableProgMain();
 						alertify.success("CREATE SUCCESSFULLY !");
 						
@@ -348,7 +373,11 @@
 			$('#btn-reset').css("display","inline");
 			$("#prog-type").val(prog_title);
 			$("#prog-type").change();
-			
+			$("#select-branch option").each(function(){
+				if($(this).val()!=branch_id){
+					$("#select-branch option[value='"+$(this).val()+"']").remove();
+				}
+			});
 			$("#select-branch").select2("val",branch_id);
 			$("#btn-update").val(prog_id);		
 			
@@ -360,11 +389,14 @@
 			$('#btn-reset').css("display","none");
 			$('#btn-create').css("display","inline");
 			$("#prog-type").val("");
-			$("#select-branch").select2("val","");
 			
+			listBranch();
 		}
 		
 		$('#btn-reset').on("click",function(){
+			reset();
+		});
+		$('.btn-default-light').on("click",function(){
 			reset();
 		});
 		
@@ -378,7 +410,8 @@
 			}
 			$(".open-modal").modal('hide');
 		});
-		
+"</c:if>"		
 	</script>
 </body>
+
 </html>

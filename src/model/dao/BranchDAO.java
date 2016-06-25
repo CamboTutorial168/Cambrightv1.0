@@ -140,8 +140,15 @@ public class BranchDAO {
 		try{
 		
 			sql="SELECT * FROM tb_branches b "
-					+ "WHERE b.status='t' ORDER BY branch_name ASC;";
+					+ "WHERE b.status='t' ";
+			if(user_level!=0){
+				sql+=" AND b.branch_id=?::uuid ";
+			}
+			sql+=" ORDER BY branch_name ASC";
 			pst=con.prepareStatement(sql);
+			if(user_level!=0){
+				pst.setString(1, branch_id);
+			}
 			ResultSet rs=pst.executeQuery();
 			while(rs.next()){
 				BranchDTO branch=new BranchDTO();

@@ -140,7 +140,7 @@ public class StudentDAO {
 	/*
 	 * checked
 	 */
-	public ArrayList<ListStudInfoDTO> listStudInfo(String branch_id) throws SQLException{
+	public ArrayList<ListStudInfoDTO> listStudInfo(String branch_id, int user_level) throws SQLException{
 		ArrayList<ListStudInfoDTO> list=new ArrayList<>();
 		String sql=null;
 		try{
@@ -168,9 +168,9 @@ public class StudentDAO {
 					+ " JOIN tb_sub_programs sub"
 					+ " ON sub.sub_prog_id=cl.sub_prog_id"
 					+ " WHERE b.status = 't' AND per.status='t' AND std.status='t' AND te.status='t' AND te.is_deleted='f' AND sub.is_deleted='f' ";
-			if(branch_id!=null)sql+=" AND b.branch_id=?::uuid;";
+			if(user_level!=0)sql+=" AND b.branch_id=?::uuid;";
 			pst=con.prepareStatement(sql);
-			if(branch_id!=null)pst.setString(1, branch_id);
+			if(user_level!=0)pst.setString(1, branch_id);
 			ResultSet rs=pst.executeQuery();
 			while(rs.next()){
 				ListStudInfoDTO info=new ListStudInfoDTO();

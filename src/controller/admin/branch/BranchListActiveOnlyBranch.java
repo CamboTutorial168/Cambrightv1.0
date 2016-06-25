@@ -38,11 +38,13 @@ public class BranchListActiveOnlyBranch extends HttpServlet {
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		try {
-			String branch_id=((UserDTO)(request.getSession().getAttribute("adminsession"))).getBranch_id();
-			
-			int user_level=((UserDTO)(request.getSession().getAttribute("adminsession"))).getUser_level();
-			
+			String branch_id=null;
 			branch_id=request.getParameter("branch_id");
+			int user_level=((UserDTO)(request.getSession().getAttribute("adminsession"))).getUser_level();
+			if(user_level!=0){
+				branch_id=((UserDTO)(request.getSession().getAttribute("adminsession"))).getBranch_id();
+			}
+			
 			ArrayList<BranchDTO> branchList = new BranchDAO().getBranchListActiveOnlyBranch(branch_id,user_level);
 			String json = new Gson().toJson(branchList);
 			response.setCharacterEncoding("UTF-8");

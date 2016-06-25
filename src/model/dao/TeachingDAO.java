@@ -20,7 +20,7 @@ public class TeachingDAO {
 	 */
 	public ArrayList<TeachDTO> getListTeaching(String branch_id,int user_type) throws SQLException{
 		ArrayList<TeachDTO> list=new ArrayList<TeachDTO>();
-		String sql="SELECT te.*,cl.*,sub_prog_title,e.english_name,id_card,pr.prog_id,b.branch_id,b.branch_name, te.status,"
+		String sql="SELECT te.*,cl.*,sub_prog_title,e.english_name,id_card,pr.prog_id,b.branch_id,b.branch_name,b.color, te.status,"
 				+ "(SELECT b.branch_name FROM tb_branches b WHERE b.branch_id=e.branch_id) as empbranch,"
 				+ "(SELECT count(s.student_id) FROM tb_studying stdy JOIN tb_students s ON s.student_id=stdy.student_id WHERE stdy.teach_id=te.teach_id AND s.status='t' AND stdy.status='t') as student_num"
 				+ " FROM tb_teaching te"
@@ -36,7 +36,13 @@ public class TeachingDAO {
 				+ " ON e.emp_id = te.emp_id"
 				+ " WHERE sub.is_deleted='f' AND b.status='t' AND e.status='t' AND te.is_deleted='f' AND pr.is_deleted='f' ";
 		try{
+			if(user_type!=0){
+				sql+=" AND b.branch_id=?::uuid";
+			}
 			pst=con.prepareStatement(sql);
+			if(user_type!=0){
+				pst.setString(1, branch_id);
+			}
 			ResultSet rs=pst.executeQuery();
 			while(rs.next()){
 				TeachDTO t=new TeachDTO();
@@ -49,6 +55,7 @@ public class TeachingDAO {
 				t.setEng_name(rs.getString("english_name"));
 				t.setBranch_id(rs.getString("branch_id"));
 				t.setBranch_name(rs.getString("branch_name"));
+				t.setBranch_color(rs.getString("color"));
 				t.setClass_name(rs.getString("class_title"));
 				t.setClass_color(rs.getString("class_color"));
 				t.setStudent_num(rs.getString("student_num"));

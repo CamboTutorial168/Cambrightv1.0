@@ -45,8 +45,12 @@ public class BranchList extends HttpServlet {
 			String branch_id=((UserDTO)(request.getSession().getAttribute("adminsession"))).getBranch_id();
 			
 			int user_level=((UserDTO)(request.getSession().getAttribute("adminsession"))).getUser_level();
-			ArrayList<BranchDTO> branchList = new BranchDAO().getBranchList(branch_id,user_level);
-			String json = new Gson().toJson(branchList);
+			String json=null;
+			
+			if(user_level==0){
+				ArrayList<BranchDTO> branchList = new BranchDAO().getBranchList(branch_id,user_level);
+				 json= new Gson().toJson(branchList);
+			}
 			response.setCharacterEncoding("UTF-8");
 			response.setContentType("application/json");
 			response.getWriter().write(json);

@@ -39,6 +39,9 @@
 						<c:if test="${adminsession.branch_name!=null}">
 							<span class="badge style-accent-dark">${adminsession.branch_name }</span>
 						</c:if>
+						<c:if test="${studentsession.branch_name!=null}">
+							<span class="badge style-accent-dark">${studentsession.branch_name }</span>
+						</c:if>
 					</div>
 				</li>
 				<li class="dropdown hidden-xs"><a href="javascript:void(0);"
@@ -80,19 +83,31 @@
 			<!--end .header-nav-options -->
 			<ul class="header-nav header-nav-profile">
 				<li class="dropdown"><a href="javascript:void(0);"
-					class="dropdown-toggle ink-reaction" data-toggle="dropdown"> <c:choose>
-							<c:when test="${adminsession.img_url!=null }">
+					class="dropdown-toggle ink-reaction" data-toggle="dropdown">
+					 	<c:if  test="${adminsession.img_url!=null }">
 								<img
 									src="${pageContext.servletContext.contextPath }/admin/cpanel/img/emp/${adminsession.img_url}"
 									alt="" />
-							</c:when>
-							<c:otherwise>
+						</c:if>
+						<!--  -->
+						<c:if  test="${studentsession.img_url!=null }">
+								<img
+									src="${pageContext.servletContext.contextPath }/img/stud/${studentsession.img_url}"
+									alt="" />
+						</c:if>
+						<c:if  test="${adminsession.img_url==null && studentsession.img_url==null}">
 								<img
 									src="${pageContext.servletContext.contextPath }/assets/img/user.png"
 									alt="" />
-							</c:otherwise>
-						</c:choose> <span class="profile-info"> ${adminsession.kh_name} <small>${adminsession.user_type }</small>
-					</span>
+						</c:if>
+						<c:if test="${studentsession.branch_name!=null}">
+							<span class="profile-info"> ${studentsession.kh_name} <small>${studentsession.user_type }</small></span>
+						</c:if>
+						<c:if test="${adminsession.branch_name!=null}">
+							<span class="profile-info"> ${adminsession.kh_name} <small>${adminsession.user_type }</small></span>
+						</c:if>
+						 
+					
 				</a>
 					<ul class="dropdown-menu animation-dock">
 						<li class="dropdown-header">Setting</li>
@@ -101,7 +116,8 @@
 						<li class="divider"></li>
 						<li><a href="#" data-toggle="modal" data-target="#formModal"><i
 								class="fa fa-fw fa-lock"></i> Change password</a></li>
-						<li><a href="logout_admin"><i
+						<li><a href="<c:if test='${adminsession!=null}'>logout_admin </c:if> 
+									 <c:if test='${studentsession!=null}'>logout_student</c:if>"><i
 								class="fa fa-fw fa-power-off text-danger"></i> Logout</a></li>
 					</ul>
 					<!--end .dropdown-menu --></li>

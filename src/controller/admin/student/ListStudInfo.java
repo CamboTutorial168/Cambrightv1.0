@@ -39,12 +39,10 @@ public class ListStudInfo extends HttpServlet {
 			String branch_id=null;
 			int user_level=((UserDTO)(request.getSession().getAttribute("adminsession"))).getUser_level();
 			
-			if(user_level==0){
-				branch_id=request.getParameter("branch_id");			
-			}else{
-				branch_id=((UserDTO)(request.getSession().getAttribute("adminsession"))).getBranch_id();
+			if(user_level!=0){
+				branch_id=((UserDTO)(request.getSession().getAttribute("adminsession"))).getBranch_id();			
 			}
-			ArrayList<ListStudInfoDTO> list = new StudentDAO().listStudInfo(branch_id);
+			ArrayList<ListStudInfoDTO> list = new StudentDAO().listStudInfo(branch_id,user_level);
 			String json = new Gson().toJson(list);
 			response.setCharacterEncoding("UTF-8");
 			response.setContentType("application/json");

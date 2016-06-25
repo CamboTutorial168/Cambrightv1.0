@@ -66,7 +66,7 @@ public class ClassesDAO {
 	/*
 	 * checked
 	 */
-	public ArrayList<ClassDTO> listClass() throws SQLException{
+	public ArrayList<ClassDTO> listClass(String branch_id,int user_level) throws SQLException{
 		ArrayList<ClassDTO> c=new ArrayList<>();
 		try{
 				String sql="SELECT * FROM tb_classes cl"
@@ -75,8 +75,15 @@ public class ClassesDAO {
 						+ " JOIN tb_programs pr"
 						+ " ON pr.prog_id=s.prog_id"
 						+ " JOIN tb_branches b"
-						+ " ON b.branch_id=pr.branch_id WHERE b.status='t' AND s.is_deleted='f' AND pr.is_deleted='f';";
+						+ " ON b.branch_id=pr.branch_id WHERE b.status='t' AND s.is_deleted='f' AND pr.is_deleted='f' ";
+				
+				if(user_level==2 && user_level<3){
+					sql+=" AND b.branch_id=?::uuid";
+				}
 				pst=con.prepareStatement(sql);
+				if(user_level==2 && user_level<3){
+					pst.setString(1, branch_id);
+				}
 				ResultSet rs=pst.executeQuery();
 				while(rs.next()){
 					ClassDTO cl=new ClassDTO();
@@ -87,6 +94,7 @@ public class ClassesDAO {
 					cl.setSub_prog_title(rs.getString("sub_prog_title"));
 					cl.setBranch_id(rs.getString("branch_id"));
 					cl.setBranch_name(rs.getString("branch_name"));
+					cl.setBranch_color(rs.getString("color"));
 					c.add(cl);
 				}
 		}catch(Exception e){e.printStackTrace();}

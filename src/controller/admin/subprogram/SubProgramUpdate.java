@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import model.dao.SubProgramDAO;
 import model.dto.SubProgCreateDTO;
+import model.dto.UserDTO;
 
 /**
  * Servlet implementation class SubProgramUpdate
@@ -32,7 +33,7 @@ public class SubProgramUpdate extends HttpServlet {
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		try {
-
+			int user_level=((UserDTO)(request.getSession().getAttribute("adminsession"))).getUser_level();
 			SubProgCreateDTO prog=new SubProgCreateDTO();
 			prog.setProg_id((request.getParameter("prog_id")));			
 			prog.setSubprog_id((request.getParameter("subprog_id")));
@@ -45,7 +46,10 @@ public class SubProgramUpdate extends HttpServlet {
 			prog.setPmstart(request.getParameter("pmstart"));
 			prog.setPmend(request.getParameter("pmend"));
 			
-			boolean check = new SubProgramDAO().updateSubProgram(prog);
+			boolean check = false;
+			if(user_level==0){
+				new SubProgramDAO().updateSubProgram(prog);
+			}
 			response.setContentType("text/plain");
 			response.setCharacterEncoding("UTF-8");
 			if (check == true) {

@@ -36,8 +36,9 @@ public class SubProgramList extends HttpServlet {
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		try{
-			String branch_id=((UserDTO)(request.getSession().getAttribute("adminsession"))).getBranch_id();
+			String branch_id=null;
 			int user_level=((UserDTO)(request.getSession().getAttribute("adminsession"))).getUser_level();
+			
 			
 			ArrayList<SubProgramListDTO> list=new SubProgramDAO().listSubProg(branch_id,user_level);
 			String json=new Gson().toJson(list);
