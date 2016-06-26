@@ -249,7 +249,7 @@
 						$("#loading").remove();
 					},
 					success:function(data){
-						console.log(data)
+						
 						$(".list-subprog").html(subProgList_Supply(data)).change();
 					},
 					error: function(jqXHR, exception) {

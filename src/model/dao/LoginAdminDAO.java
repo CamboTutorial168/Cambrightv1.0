@@ -49,5 +49,4 @@ public class LoginAdminDAO {
 		}
 		return null;		
 	}
-	
 }

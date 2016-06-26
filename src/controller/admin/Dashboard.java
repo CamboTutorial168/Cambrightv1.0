@@ -13,6 +13,8 @@ import com.google.gson.Gson;
 
 import model.dao.DashboardDAO;
 import model.dto.ChartDTO;
+import model.dto.NewStudentsDTO;
+import model.dto.StudentRemainExpireDTO;
 import model.dto.UserDTO;
 
 /**
@@ -35,18 +37,43 @@ public class Dashboard extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		try {
-			String branch_id=((UserDTO)(request.getSession().getAttribute("adminsession"))).getBranch_id();
+			String branch_id=null;
 			int user_level=((UserDTO)(request.getSession().getAttribute("adminsession"))).getUser_level();
-			request.setAttribute("getactivestud",new DashboardDAO().getActiveStudent(branch_id,user_level));
-			request.setAttribute("getactiveemp",new DashboardDAO().getActiveEmployees(branch_id,user_level));
-			request.setAttribute("getabsentemp",new DashboardDAO().getAbsentEmp(branch_id,user_level));
-		//	request.setAttribute("getdiscourse",					new DashboardDAO().getDiactiveCourse());
-			//request.setAttribute("getallnewstu", new DashboardDAO().getAllNewStudent());
-			response.setCharacterEncoding("UTF-8");
-			response.setContentType("application/json");
-			ArrayList<ChartDTO> chartCol = new DashboardDAO().getForChartCol(branch_id);
-			String json = new Gson().toJson(chartCol);
-			request.setAttribute("chartCol", json);
+			String emp_id=((UserDTO)(request.getSession().getAttribute("adminsession"))).getEmp_id();
+			if(user_level==2 || user_level==3){
+				branch_id=((UserDTO)(request.getSession().getAttribute("adminsession"))).getBranch_id();
+			}
+			//FOR ADMIN
+			if(user_level==0 || user_level==2){
+				System.out.println(user_level);
+				request.setAttribute("getactivestud",new DashboardDAO().getActiveStudent(branch_id,user_level));
+				request.setAttribute("getactiveemp",new DashboardDAO().getActiveEmployees(branch_id,user_level));
+				request.setAttribute("getabsentemp",new DashboardDAO().getAbsentEmp(branch_id,user_level));
+				request.setAttribute("getclassAval",new DashboardDAO().getClassRoomAvaliable(branch_id,user_level));
+				ArrayList<ChartDTO> chartCol = new DashboardDAO().getForChartCol(branch_id,user_level);
+				ArrayList<StudentRemainExpireDTO> expiredStud = new DashboardDAO().getNearlyExpired(branch_id,user_level);
+				ArrayList<NewStudentsDTO> newStud= new DashboardDAO().getAllNewStudent(branch_id,user_level);
+				
+				response.setCharacterEncoding("UTF-8");
+				response.setContentType("application/json");
+				String jsonChat = new Gson().toJson(chartCol);
+				String jsonExp=new Gson().toJson(expiredStud);
+				String jsonNewStud=new Gson().toJson(newStud);
+				request.setAttribute("chartCol", jsonChat);
+				request.setAttribute("expriedStudent", jsonExp);
+				request.setAttribute("getallnewstu", jsonNewStud);
+				if(user_level==0){
+					request.setAttribute("chartLine",new DashboardDAO().getForChatLine().toString().replaceAll("\"", ""));
+				}
+				
+			}else{ 
+				//FORTEACHER
+				request.setAttribute("getClassNStudent",new DashboardDAO().getClassRoom(branch_id, user_level, emp_id).toString().replaceAll("'", "\""));
+				request.setAttribute("getNumAbsent",new DashboardDAO().getNumAbsent(branch_id, user_level, emp_id));
+				request.setAttribute("getLevelTeach",new DashboardDAO().getLevelTeach(branch_id, user_level, emp_id));
+				request.setAttribute("getMyStudentListAbsent",new DashboardDAO().getMyStudentListAbsent(emp_id));
+				
+			}
 			request.getRequestDispatcher("dashboard.jsp").forward(request,response);
 		} catch (Exception e) {
 			e.printStackTrace();

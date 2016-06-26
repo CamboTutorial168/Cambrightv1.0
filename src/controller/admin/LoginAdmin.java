@@ -52,6 +52,7 @@ public class LoginAdmin extends HttpServlet {
 				session.setAttribute("english_name", admin.getEng_name());
 				session.setAttribute("image_url", admin.getImg_url());
 				session.setAttribute("adminsession", admin);
+				
 				response.getWriter().write("true");
 			}else{
 				response.getWriter().write("false");
