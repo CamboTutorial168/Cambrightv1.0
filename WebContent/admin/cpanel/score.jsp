@@ -67,6 +67,14 @@
 								<div
 									class="card-head card-head-sm card-body style-accent no-padding">
 									<header>STUDENTS SCORE</header>
+<c:if test="${adminsession.user_level==3 }">
+									<div class="tools">
+										 <a	class="btn ink-reaction btn-floating-action btn-accent-dark"
+											data-toggle="tooltip" data-placement="top"
+											title="Export PDF" target="_blank" onclick="exportPDF()"><i class="fa fa-file-pdf-o"></i></a>
+										
+									</div>
+</c:if>
 								</div>
 								<!--end .card-head -->
 								<div class="card-body">
@@ -122,13 +130,6 @@
 														<option value="am">AM</option>
 														<option value="pm">PM</option>
 													</select> <label>PERIOD</label>
-												</div>
-											</div>
-											<div class="col-md-1">
-												<div class="form-group floating-label">
-													<button type="button"
-														class="btn ink-reaction btn-raised btn-sm btn-accent"
-														disabled id="ck-att">SUBMIT</button>
 												</div>
 											</div>
 										</div>
@@ -192,7 +193,7 @@
         listBranch();
 		function listBranch() {
 			$.ajax({
-				url : "branchlistactive.json",
+				url : "branchlistactivebranch.json",
 				dataType : "json",
 				type : "POST",
 				beforeSend : function() {
@@ -266,7 +267,6 @@
 					$("#loading").remove();
 				},
 				success : function(data) {
-
 					$("#select-class").html(listClassSupply(data, subprog_id)).change();
 					$("#select-class").select2();
 				},
@@ -284,6 +284,9 @@
 			var lent = cAval.length;
 			list += "<optgroup label='Classroom'>";
 			for (var i = 0; i < lent; i++) {
+				"<c:if test='${adminsession.user_level==3}'>"
+				 if(cAval[i]['emp_id']=='${adminsession.emp_id}')
+				"</c:if>"
 				list += "<option value="+cAval[i].class_id+">"
 						+ cAval[i].class_name + "</option>";
 			}
@@ -365,11 +368,14 @@
 		    } );
 		 }
 		$("#branch-list").on("change", function() {
-			getListTeaching();
 			listSubProg();
+			
 		});
 		$("#select-subprog").on("change", function() {
+			getListTeaching();
 			listClass($("#select-subprog").val());
+			
+			
 		});
 		$("#select-class").on("change",function(){
 			listStudInfo();
@@ -396,14 +402,7 @@
   					$("#loading").remove();
   				},
   				success:function(people){
-  					//find filter people in specific filter
-  					
-  					
-  					/* if(people!=""){
-  						var people=$.extend(true,find( ), scorelist);
-  	  					console.log(people);
-  	  					
-  					} */
+	  					if(people!="")
   						$("#list-score").html(listStudInfoSupply(find(people )));
 	  					callJTable(); 
   				},
@@ -424,6 +423,7 @@
   					month:dateinControl
   				},
   				success:function(data){
+  					console.log(data);
   					scorelist=data;
   				},
   				error: function(jqXHR, exception) {
@@ -448,16 +448,15 @@
 					rs.push(people[i]);
 				}
 			}
+			
 			return rs;
 		}
 		function listStudInfoSupply(data){
-			console.log(data);
-			console.log(scorelist);
 			var len=scorelist.length;
 			var table="<table class='table' id='tb_list'>";
 			table+="<thead>"+
 						"<tr>"+
-							"<th class='sort-alpha' style='width:10%'>Name</th>"+
+							"<th class='sort-alpha' style='width:6%'>ID</th>"+
 							"<th class='sort-alpha' style='width:10%'>Name</th>"+
 							"<th class='sort-alpha'>VO</th>"+
 							"<th class='sort-numberic'>GR</th>"+
@@ -468,8 +467,14 @@
 							"<th class='sort-numberic'>PA</th>"+
 							"<th class='sort-numberic'>MA</th>"+
 							"<th class='sort-numberic'>CL</th>"+
-							"<th>ACTION</th>"+
-						"</tr>"+
+							"<th class='sort-numberic' style='width:5%'>ABSENT</th>"+
+							"<th class='sort-numberic' style='width:5%'>GRANT</th>"+
+							"<th class='sort-numberic' style='width:8%'>TOTAL</th>"+
+							"<th class='sort-numberic' style='width:5%'>RANK</th>";
+							"<c:if test='${adminsession.user_level==3 || adminsession.user_level==2}'>"	
+							table+="<th>ACTION</th>";
+							"</c:if>"
+						table+="</tr>"+
 					   "</thead>"+
 			   		"<tbody>";
 			for(var i=0;i<data.length;i++){
@@ -487,7 +492,12 @@
 								"<td><input type='number' min='0' max='10' id='sp' class='form-control sp_"+data[i].student_id+"' required value='"+scorelist[j].sp+"' disabled></td>"+
 								"<td><input type='number' min='0' max='10' id='pa' class='form-control pa_"+data[i].student_id+"' required value='"+scorelist[j].pa+"' disabled></td>"+
 								"<td><input type='number' min='0' max='10' id='ma' class='form-control ma_"+data[i].student_id+"' required value='"+scorelist[j].ma+"' disabled></td>"+
-								"<td><input type='number' min='0' max='5' id='cl' class='form-control cl_"+data[i].student_id+"' required value='"+scorelist[j].class_part+"' disabled></td>";
+								"<td><input type='number' min='0' max='5' id='cl' class='form-control cl_"+data[i].student_id+"' required value='"+scorelist[j].class_part+"' disabled></td>"+
+								"<td><input type='number' class='form-control' required value='"+scorelist[j].num_absent+"' disabled></td>"+
+								"<td><input type='number' class='form-control' required value='"+scorelist[j].num_grant+"' disabled></td>"+
+								"<td><input type='number' class='form-control' required value='"+scorelist[j].total+"' disabled></td>"+
+								"<td><input type='number' class='form-control' required value='"+scorelist[j].rank+"' disabled></td>";
+						"<c:if test='${adminsession.user_level==3 || adminsession.user_level==2}'>"
 						table+= "<td style='width:10%'>";
 						if(scorelist[j].status=='f'){
 							table+="<button type='button' onClick=\"checkStatus('"+scorelist[j].score_id+"','t')\" class='btn ink-reaction btn-floating-action btn-xs btn-danger btn-status'  data-toggle='tooltip' data-placement='top' title='Disabled'><i class='md md-close'></i></button>";
@@ -495,9 +505,11 @@
 						}else{
 							table+="<button type='button' onClick=\"checkStatus('"+scorelist[j].score_id+"','f')\" class='btn ink-reaction btn-floating-action btn-xs btn-info btn-status'  data-toggle='tooltip' data-placement='top' title='Enabled'><i class='md md-check'></i></button>";
 						}
+						"</c:if>"
 					} 
 				}
 			if(scorelist==""||ck==false){
+				
 				table+="<td><input type='number' min='0' max='10' id='vob' class='form-control vob_"+data[i].student_id+"' required value='0' disabled></td>"+
 				"<td><input type='number' min='0' max='10' id='gr' class='form-control gr_"+data[i].student_id+"' required value='0' disabled></td>"+
 				"<td><input type='number' min='0' max='10' id='re' class='form-control re_"+data[i].student_id+"' required value='0' disabled></td>"+
@@ -506,14 +518,19 @@
 				"<td><input type='number' min='0' max='10' id='sp' class='form-control sp_"+data[i].student_id+"' required value='0' disabled></td>"+
 				"<td><input type='number' min='0' max='10' id='pa' class='form-control pa_"+data[i].student_id+"' required value='0' disabled></td>"+
 				"<td><input type='number' min='0' max='10' id='ma' class='form-control ma_"+data[i].student_id+"' required value='0' disabled></td>"+
-				"<td><input type='number' min='0' max='5' id='cl' class='form-control cl_"+data[i].student_id+"' required value='0' disabled></td>";
+				"<td><input type='number' min='0' max='5' id='cl' class='form-control cl_"+data[i].student_id+"' required value='0' disabled></td>"+
+				"<td><input type='number' class='form-control' required value='0' disabled></td>"+
+				"<td><input type='number' class='form-control' required value='0' disabled></td>"+
+				"<td><input type='number' class='form-control' required value='0' disabled></td>"+
+				"<td><input type='number' class='form-control' required value='0' disabled></td>";
 				table+= "<td style='width:10%'>";
 			}
-			
+			"<c:if test='${adminsession.user_level==3 || adminsession.user_level==2}'>"
 			table+=	"<button type='button' class='btn ink-reaction btn-floating-action btn-xs btn-warning "+data[i].id_card+"' data-toggle='tooltip' data-placement='top' title='Edit' onClick=\"edit('"+data[i]['student_id']+"','"+data[i].id_card+"')\" ><i class='md md-mode-edit'></i></button>"+
 					"<button type='button' class='btn ink-reaction btn-floating-action btn-xs btn-primary "+data[i].id_card+"' data-toggle='tooltip' data-placement='top' title='Save' disabled onClick=\"Save('"+data[i]['student_id']+"','"+data[i].id_card+"')\" ><i class='md md-save'></i></button>"+
-					"</td>"+
-				"</tr>";
+					"</td>";
+			"</c:if>"					
+			table+="</tr>";
 			}
 			table+="</tbody></table>";
 			return table;
@@ -567,6 +584,7 @@
 						$("[class*='_"+class_f+"']").attr("disabled",true);
 						$(".btn-warning."+class_self).attr("disabled",false);
 						$(".btn-primary."+class_self).attr("disabled",true);
+						listStudInfo();
 					}else{
 						swal('FAILED!','Unable to submit','error');
 					}
@@ -600,6 +618,12 @@
 		function callJTable(){
 			$('#tb_list').DataTable();
 			$('[data-toggle="tooltip"]').tooltip();
+		}
+		function exportPDF(){
+			var monthNames = ["Jan", "Feb", "Mar","Apr", "May", "Jun", "Jul","Aug", "Sep", "Oct", "Nov", "Dec"];
+			var token=($('#control-date').val()).split("/");
+			var dateinControl=token[1]+"-"+(monthNames.indexOf(token[0])+1)+"-1";
+			window.open("report_rank_pdf?month="+dateinControl,"_blank");
 		}
     </script>
 

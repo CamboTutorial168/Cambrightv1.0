@@ -1,11 +1,14 @@
 
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
+<%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>	
 <!DOCTYPE html>
 <html>
 <head>
 <title>CAMBRIGHT | Employees Register</title>
-
+<c:if test="${adminsession.user_level >2 }">
+	<c:redirect url="/admin"></c:redirect>
+</c:if>
 <!-- BEGIN META -->
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -159,7 +162,7 @@
 	<script type="text/javascript">
          $("#teachtask").addClass("active");
          getListTeaching();
-         //Load in form
+         
          listBranch();
          
          
@@ -175,7 +178,7 @@
         
  		function listBranch() {
  			$.ajax({
- 				url : "branchlistactive.json",
+ 				url : "branchlistactivebranch.json",
  				dataType:"json",
  				type : "POST",
  				success : function(data) {
@@ -221,6 +224,7 @@
          }
          function getEmpListSupply(data){
         	var empAval=empAvaliable(listTeaching,data);
+        	//console.log(empAval)
         	var list = "";
         	 var len=empAval.length;
  			list+="<option></option>";
@@ -235,10 +239,13 @@
          }
          
          function empAvaliable(listTeaching,data){
+        	/*  console.log(listTeaching);
+        	 console.log(data); */
         	 var result=[];
         	 var lent=listTeaching.length;
         	 var len=data.length;
         	 var tmp=null;
+        	 if(listTeaching=="")return data;
         	 for(var i=0;i<len;i++){
         		 for(var j=0;j<lent;j++){
         			 if(data[i]['emp_id'] != listTeaching[j]['emp_id']){
@@ -264,6 +271,7 @@
 						$("#loading").remove();
 					},
 					success:function(data){
+						
 						$("#select-class").html(listClassSupply(data,subprog_id));
 						$("#select-class").select2();
 					},
@@ -275,7 +283,6 @@
          
          function listClassSupply(data,sub_prog_id){
         	 var cAval=classAvaliable(listTeaching,data);
-        	
         	 var list = "";
   			 var len=data.length;
   				list+="<option></option>";
@@ -283,7 +290,7 @@
   				if(data[i].sub_prog_id==sub_prog_id)
 	  				for(var j=0;j<cAval.length;j++){
 	  				//checking if has the same program and not duplicate class
-	  	  				if(cAval[j]== data[i].class_id){
+	  	  				if(cAval[j]['class_id']== data[i].class_id){
 	  	  					list += "<option value="+data[i].class_id+">"
 	  	  						+ data[i].class_title +"</option>";
 	  	  				}	
@@ -295,7 +302,7 @@
          }
          //Find avaliable class, or class not yet taken
          function classAvaliable(listTeaching,data){
-        	 
+        	
         	 var result=[];
         	 var fin=[];
         	 var lent=listTeaching.length;
@@ -305,23 +312,31 @@
         	 for(var i=0;i<len;i++){
         		 
        			 if(data[i]['branch_id']==$("#listbranch").val()){
-   						tmp=data[i]['class_id'];
+   						tmp=data[i];
        			}else{
        				tmp=null ;
        			}
         		if(tmp!=null)result.push(tmp);
         	 }
+        	 if(listTeaching==""){
+        		  for(var i=0;i<result.length;i++){
+        			 if(result[i]['sub_prog_id']==$("#select-subprog").val())
+        				 fin.push(result[i]);
+        		  } 
+        	 }else{
         	//filter class in branch
-        	 for(var i=0;i<result.length;i++){
-        		 for(var j=0;j<lent;j++){
-        			 if(result[i]!=listTeaching[j]['class_id']){
-        			 	tmp=result[i];
-        			 }else{
-        				 tmp=null;break;
-        			 }
-        		 }
-        		 if(tmp!=null)fin.push(tmp);
-        	 } 
+	        	 for(var i=0;i<result.length;i++){
+	        		 for(var j=0;j<lent;j++){
+	        			 if(result[i]['class_id']!=listTeaching[j]['class_id']){
+	        			 	tmp=result[i];
+	        			 }else{
+	        				 tmp=null;break;
+	        			 }
+	        		 }
+	        		 if(tmp!=null)fin.push(tmp);
+	        	 } 
+        	 }
+        	 
         	 return fin;
          }
          
@@ -389,6 +404,7 @@
          };
          
          function getListTeachingSupply(data){
+        	 console.log(data);
         	 var table="<table class='table' id='tb_list'>";
 				table+="<thead>"+
 							"<tr>"+
@@ -405,7 +421,7 @@
 					table+= "<tr>"+
 								"<td>"+data[i]['id_card']+"</td>"+
 								"<td>"+data[i]['eng_name']+"</td>"+
-								"<td><span class='badge style-accent'>"+data[i]['empbranch']+"</span></td>"+
+								"<td><span class='badge' style='background-color:"+data[i]['branch_color']+"'>"+data[i]['empbranch']+"</span></td>"+
 								"<td>"+data[i]['sub_prog_title']+"</td>"+
 								"<td><span class='badge' style='background-color:"+data[i]['class_color']+"'>"+data[i]['class_name']+"</span> has <b>"+data[i]['student_num']+"</b> students at <b>"+data[i]['branch_name']+"</b></td>"+
 								"<td>";
@@ -537,19 +553,17 @@
      		var card = $(e.currentTarget).closest('.card');
      		materialadmin.AppCard.addCardLoader(card);
      		setTimeout(function () {
-     			listBranch();
-     			getEmpList();
-		        listSubProg();
+     			
      			materialadmin.AppCard.removeCardLoader(card);
-     		}, 1500);
+     		},listBranch());
  		 });
          $('.card-head .tools .btn-refresh-list').on('click', function (e) {
       		var card = $(e.currentTarget).closest('.card');
       		materialadmin.AppCard.addCardLoader(card);
       		setTimeout(function () {
-      			getListTeaching();
+      			
       			materialadmin.AppCard.removeCardLoader(card);
-      		}, 1500);
+      		}, getListTeaching());
   		 });
         $("#select-class").on("change" ,function(){
         	 if($("#select-emp").val()!="" && $("#select-subprog").val()!="" && $("#select-class").val()!=""){

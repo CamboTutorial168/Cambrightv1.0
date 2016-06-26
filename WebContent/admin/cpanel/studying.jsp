@@ -1,12 +1,15 @@
 
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
+<%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>			
 <!-- @author Kong Sovary -->
 <!DOCTYPE html>
 <html>
 <head>
 <title>CAMBRIGHT | Students Change Time</title>
-
+<c:if test="${adminsession.user_level >2 }">
+	<c:redirect url="/admin"></c:redirect>
+</c:if>
 <!-- BEGIN META -->
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -175,7 +178,7 @@ table.dataTable span.highlight {
 		listBranch();
 		function listBranch() {
 			$.ajax({
-				url : "branchlistactive.json",
+				url : "branchlistactivebranch.json",
 				dataType : "json",
 				type : "POST",
 

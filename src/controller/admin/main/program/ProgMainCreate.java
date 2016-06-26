@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import model.dao.ProgramDAO;
 import model.dto.ProgramCreateDTO;
+import model.dto.UserDTO;
 
 /**
  * Servlet implementation class ProgMainCreate
@@ -38,10 +39,14 @@ public class ProgMainCreate extends HttpServlet {
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		try{
+			int user_level=((UserDTO)(request.getSession().getAttribute("adminsession"))).getUser_level();
 			ProgramCreateDTO p=new ProgramCreateDTO();
 			p.setProg_title(request.getParameter("prog_title"));
 			p.setBranch_id((request.getParameter("branch_id")).split(","));
-			boolean check=new ProgramDAO().createProgram(p);
+			boolean check=false;
+			if(user_level==0){
+				check=new ProgramDAO().createProgram(p);
+			}
 			response.setContentType("text/plain");
 			if(check==true){
 				response.getWriter().write("true");

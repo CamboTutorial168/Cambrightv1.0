@@ -2,6 +2,7 @@ package model.dto;
 
 public class PaymentDTO {
 	private String pay_id;
+	private String pay_type_fee;
 	public String getPay_id() {
 		return pay_id;
 	}
@@ -65,6 +66,13 @@ public class PaymentDTO {
 	public void setSubprog_title(String subprog_title) {
 		this.subprog_title = subprog_title;
 	}
+	public String getPay_type_fee() {
+		return pay_type_fee;
+	}
+	public void setPay_type_fee(String pay_type_fee) {
+		this.pay_type_fee = pay_type_fee;
+	}
+	
 	@Override
 	public String toString() {
 		return "PaymentDTO [pay_id=" + pay_id + ", fee_type=" + fee_type

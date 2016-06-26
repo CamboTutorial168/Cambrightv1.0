@@ -33,8 +33,14 @@ public class ProgMainList extends HttpServlet {
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		try{
-			String branch_id=((UserDTO)(request.getSession().getAttribute("adminsession"))).getBranch_id();
+			
+			String branch_id=null;
 			int user_level=((UserDTO)(request.getSession().getAttribute("adminsession"))).getUser_level();
+			
+			if(user_level!=0){
+				branch_id=((UserDTO)(request.getSession().getAttribute("adminsession"))).getBranch_id();
+			}
+			
 			ArrayList<String> list=new ProgramDAO().getListMain(branch_id,user_level);
 			response.setContentType("application/json");
 			response.setCharacterEncoding("UTF-8");

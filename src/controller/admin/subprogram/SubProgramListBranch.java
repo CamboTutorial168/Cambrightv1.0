@@ -29,8 +29,6 @@ public class SubProgramListBranch extends HttpServlet {
         super();
         // TODO Auto-generated constructor stub
     }
-
-
 	
 	/**
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
@@ -38,10 +36,13 @@ public class SubProgramListBranch extends HttpServlet {
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		try{
-			String branch_id=((UserDTO)(request.getSession().getAttribute("adminsession"))).getBranch_id();
+			String branch_id=request.getParameter("branch_id");
 			int user_level=((UserDTO)(request.getSession().getAttribute("adminsession"))).getUser_level();
-			branch_id =request.getParameter("branch_id");
-			ArrayList<SubProgramListDTO> list=new SubProgramDAO().listSubProgBranch(branch_id,user_level);
+			String emp_id=((UserDTO)(request.getSession().getAttribute("adminsession"))).getEmp_id();
+			if(user_level!=0){
+				branch_id =((UserDTO)(request.getSession().getAttribute("adminsession"))).getBranch_id();
+			}
+			ArrayList<SubProgramListDTO> list=new SubProgramDAO().listSubProgBranch(branch_id,user_level,emp_id);
 			String json=new Gson().toJson(list);
 			response.setCharacterEncoding("UTF-8");
 			response.setContentType("application/json");

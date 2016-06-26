@@ -17,6 +17,14 @@
     <filter-name>AdminFilter</filter-name>
     <url-pattern>/admin/cpanel/*</url-pattern>
   </filter-mapping>
+  <filter>
+    <filter-name>StudentFilter</filter-name>
+    <filter-class>controller.student.StudentFilter</filter-class>
+  </filter>
+  <filter-mapping>
+    <filter-name>StudentFilter</filter-name>
+    <url-pattern>/user/*</url-pattern>
+  </filter-mapping>
   <error-page>
     <error-code>404</error-code>
     <location>/404.jsp</location>
@@ -34,6 +42,14 @@
     <url-pattern>/admin/cpanel/dashboard</url-pattern>
   </servlet-mapping>
   <servlet>
+    <servlet-name>DashboardStud</servlet-name>
+    <servlet-class>controller.student.DashboardStud</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>DashboardStud</servlet-name>
+    <url-pattern>/user/dashboard</url-pattern>
+  </servlet-mapping>
+  <servlet>
     <servlet-name>ADMINLOGIN</servlet-name>
     <servlet-class>controller.admin.LoginAdmin</servlet-class>
   </servlet>
@@ -42,12 +58,44 @@
     <url-pattern>/admin/admin_login</url-pattern>
   </servlet-mapping>
   <servlet>
+    <servlet-name>LoginStudent</servlet-name>
+    <servlet-class>controller.student.LoginStudent</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>LoginStudent</servlet-name>
+    <url-pattern>/student_login</url-pattern>
+  </servlet-mapping>
+  <servlet>
+    <servlet-name>ChangePassword</servlet-name>
+    <servlet-class>controller.admin.ChangePassword</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>ChangePassword</servlet-name>
+    <url-pattern>/admin/cpanel/change_pw</url-pattern>
+  </servlet-mapping>
+  <servlet>
+    <servlet-name>ChangePasswordStud</servlet-name>
+    <servlet-class>controller.student.ChangePasswordStud</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>ChangePasswordStud</servlet-name>
+    <url-pattern>/user/change_pw_stud</url-pattern>
+  </servlet-mapping>
+  <servlet>
     <servlet-name>LOGOUTADMIN</servlet-name>
     <servlet-class>controller.admin.LogoutAdmin</servlet-class>
   </servlet>
   <servlet-mapping>
     <servlet-name>LOGOUTADMIN</servlet-name>
     <url-pattern>/admin/cpanel/logout_admin</url-pattern>
+  </servlet-mapping>
+  <servlet>
+    <servlet-name>LogoutStudent</servlet-name>
+    <servlet-class>controller.student.LogoutStudent</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>LogoutStudent</servlet-name>
+    <url-pattern>/user/logout_student</url-pattern>
   </servlet-mapping>
   <servlet>
     <servlet-name>BranchCreate</servlet-name>
@@ -346,6 +394,14 @@
     <url-pattern>/admin/cpanel/liststudinfo.json</url-pattern>
   </servlet-mapping>
   <servlet>
+    <servlet-name>ListStudInfoAttendance</servlet-name>
+    <servlet-class>controller.student.student.ListStudInfoAttendance</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>ListStudInfoAttendance</servlet-name>
+    <url-pattern>/user/liststudattinfo.json</url-pattern>
+  </servlet-mapping>
+  <servlet>
     <servlet-name>StudUpdate</servlet-name>
     <servlet-class>controller.admin.student.StudUpdate</servlet-class>
   </servlet>
@@ -450,6 +506,14 @@
     <url-pattern>/admin/cpanel/attendancestuchecklist.json</url-pattern>
   </servlet-mapping>
   <servlet>
+    <servlet-name>AttendanceStuCheckListForStudentOnly</servlet-name>
+    <servlet-class>controller.admin.attendance.AttendanceStuCheckList</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>AttendanceStuCheckListForStudentOnly</servlet-name>
+    <url-pattern>/user/attendancestuchecklist.json</url-pattern>
+  </servlet-mapping>
+  <servlet>
     <servlet-name>AttendanceStuSubmit</servlet-name>
     <servlet-class>controller.admin.attendance.AttendanceStuSubmit</servlet-class>
   </servlet>
@@ -474,11 +538,27 @@
     <url-pattern>/admin/cpanel/scorelist.json</url-pattern>
   </servlet-mapping>
   <servlet>
+    <servlet-name>ScoreStudList</servlet-name>
+    <servlet-class>controller.student.score.ScoreStudList</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>ScoreStudList</servlet-name>
+    <url-pattern>/user/scorestudlist.json</url-pattern>
+  </servlet-mapping>
+  <servlet>
     <servlet-name>ScoreStatus</servlet-name>
     <servlet-class>controller.admin.score.ScoreStatus</servlet-class>
   </servlet>
   <servlet-mapping>
     <servlet-name>ScoreStatus</servlet-name>
     <url-pattern>/admin/cpanel/score_status</url-pattern>
+  </servlet-mapping>
+  <servlet>
+    <servlet-name>CreateStudRankPDF</servlet-name>
+    <servlet-class>controller.admin.report.CreateStudRankPDF</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>CreateStudRankPDF</servlet-name>
+    <url-pattern>/admin/cpanel/report_rank_pdf</url-pattern>
   </servlet-mapping>
 </web-app>

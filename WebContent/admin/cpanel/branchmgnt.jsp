@@ -1,11 +1,14 @@
 
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
+<%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <!DOCTYPE html>
 <html>
 <head>
 <title>CAMBRIGHT | Branch Management</title>
-
+<c:if test="${adminsession.user_level!=0 }">
+	<c:redirect url="/admin"></c:redirect>
+</c:if>
 <!-- BEGIN META -->
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -36,9 +39,8 @@
 </head>
 <body class="menubar-hoverable header-fixed ">
 
-	<jsp:include
-		page="${pageContext.servletContext.contextPath }/../mastertop/header.jsp"></jsp:include>
-
+	<c:import url="${pageContext.servletContext.contextPath }/../mastertop/header.jsp"></c:import>
+	
 	<!-- BEGIN BASE-->
 	<div id="base">
 		<!-- BEGIN CONTENT-->
@@ -179,6 +181,7 @@
 				}
 			
 				function listBranch(data){
+					
 					var table="<table class='table' id='tb_list'>";
 					table+="<thead>"+
 								"<tr>"+
@@ -202,7 +205,7 @@
 										table+="<button type='button' onClick=\"checkStatus('"+data[i].branch_id+"','f')\" class='btn ink-reaction btn-floating-action btn-xs btn-info btn-status'  data-toggle='tooltip' data-placement='top' title='Enabled'><i class='fa fa-check'></i></button>";
 									}
 									 
-									 table+="<button type='button'  class='btn ink-reaction btn-floating-action btn-xs btn-warning' data-toggle='tooltip' data-placement='top' title='Edit' onClick=\"edit('"+data[i].branch_id+"','"+data[i].branch_name+"','"+data[i].address+"','"+data[i].contact+"')\" ><i class='fa fa-edit'></i></button>"+ 
+									 table+="<button type='button'  class='btn ink-reaction btn-floating-action btn-xs btn-warning' data-toggle='tooltip' data-placement='top' title='Edit' onClick=\"edit('"+data[i].branch_id+"','"+data[i].branch_name+"','"+data[i].br_color+"','"+data[i].address+"','"+data[i].contact+"')\" ><i class='fa fa-edit'></i></button>"+ 
 									"</td>"+
 								"</tr>";
 					}
@@ -212,12 +215,13 @@
 					return table;
 				}	
 				
-				function edit(branch_id,branch_name,address,contact){
+				function edit(branch_id,branch_name,branch_color,address,contact){
 					$('#btn-create').css("display","none");
 					$('#btn-update').css("display","inline");
 					$('#btn-reset').css("display","inline");
 					$("#branch-name").val(branch_name);
 					$("#branch-name").change();
+					$("#color").val(branch_color);
 					$("#address").val(address);
 					$("#address").change();
 					$("#contact").val(contact);

@@ -10,6 +10,7 @@ public class TeachDTO  {
 	private String emp_id;
 	private String branch_id;
 	private String branch_name;
+	private String branch_color;
 	private String status;
 	private String class_id;
 	private String class_name;
@@ -85,6 +86,12 @@ public class TeachDTO  {
 	}
 	public String getClass_name() {
 		return class_name;
+	}
+	public String getBranch_color() {
+		return branch_color;
+	}
+	public void setBranch_color(String branch_color) {
+		this.branch_color = branch_color;
 	}
 	public void setClass_name(String class_name) {
 		this.class_name = class_name;

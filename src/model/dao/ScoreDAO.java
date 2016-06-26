@@ -76,11 +76,36 @@ public class ScoreDAO {
 		ArrayList<ScoreDTO> list=new ArrayList<>();
 		String sql=null;
 		try{
-			sql="SELECT * FROM tb_scores"
+			/*sql="SELECT * FROM tb_scores"
 					+ " WHERE EXTRACT(month FROM month)=(SELECT EXTRACT(month FROM ?::DATE ))"
-					+ " ORDER BY EXTRACT(DAY from month) ASC;";
+					+ " ORDER BY EXTRACT(DAY from month) ASC;";*/
+			sql="SELECT *,( big_tb.total - big_tb.num_absent-(big_tb.num_grant/2)) as real_rs,"
+						+ "(RANK() OVER(ORDER BY (big_tb.total - big_tb.num_absent-(big_tb.num_grant/2)) DESC)) as rank"
+						+ " FROM "
+						+ " (SELECT sc.*,SUM(vocab+grammar+read+write+listen+speak+paint+math+class_part) as total,"
+						+ "	(SELECT count(is_absent) FROM tb_attendantstu atstu1 WHERE is_absent='a'"
+						+ " AND EXTRACT(month FROM att_date)=(SELECT EXTRACT(month FROM ?::DATE ))"
+						+ " AND EXTRACT(year FROM att_date)=(SELECT EXTRACT(year FROM ?::DATE ))"
+						+ "	AND atstu1.student_id=sc.student_id) as num_absent,	(SELECT count(is_absent)"
+						+ " FROM tb_attendantstu atstu2	WHERE is_absent='g'"
+						+ "	AND EXTRACT(month FROM att_date)=(SELECT EXTRACT(month FROM ?::DATE ))"
+						+ "	AND EXTRACT(year FROM att_date)=(SELECT EXTRACT(year FROM ?::DATE ))"
+						+ "	AND atstu2.student_id=sc.student_id) as num_grant"
+						+ "	FROM tb_scores sc"
+						+ "	JOIN tb_sub_programs sub"
+						+ "	ON sub.sub_prog_id=sc.sub_prog_id"
+						+ "	WHERE EXTRACT(month FROM month)=(SELECT EXTRACT(month FROM ?::DATE ))"
+				//		+ "	AND sub.sub_prog_id='d9c326f4-394e-11e6-9c70-eb1b3b246fab'"
+						+ "	GROUP BY sc.score_id,sc.vocab,sc.grammar,sc.read,sc.write,sc.listen,sc.speak,sc.paint,sc.math,sc.class_part,sc.month,"
+						+ "	sc.student_id,sc.sub_prog_id,sub.sub_prog_id"
+					+ ")"
+					+ " AS big_tb";
 			pst=con.prepareStatement(sql);
 			pst.setString(1, month);
+			pst.setString(2, month);
+			pst.setString(3, month);
+			pst.setString(4, month);
+			pst.setString(5, month);
 			ResultSet rs=pst.executeQuery();
 			while(rs.next()){
 				ScoreDTO sc=new ScoreDTO();
@@ -98,6 +123,10 @@ public class ScoreDAO {
 				sc.setStudent_id(rs.getString("student_id"));
 				sc.setSub_prog_id(rs.getString("sub_prog_id"));
 				sc.setStatus(rs.getString("status"));
+				sc.setNum_absent(rs.getString("num_absent"));
+				sc.setNum_grant(rs.getString("num_grant"));
+				sc.setTotal(rs.getString("total"));
+				sc.setRank(rs.getString("rank"));
 				list.add(sc);
 			}
 			

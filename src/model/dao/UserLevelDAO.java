@@ -15,11 +15,15 @@ public class UserLevelDAO {
 	public UserLevelDAO() {
 		con=new Conn().getConnection();
 	}
-	public ArrayList<UserLevelDTO> getUserLevel(String utype) throws SQLException{
+	public ArrayList<UserLevelDTO> getUserLevel(String branch_id,int user_level) throws SQLException{
 		ArrayList<UserLevelDTO> list=new ArrayList<UserLevelDTO>();
 		String sql="";
 		try{
-			sql="SELECT * FROM tb_users_level ORDER BY user_level ASC;";
+			sql="SELECT * FROM tb_users_level ";
+			if(user_level!=0){
+				sql+=" WHERE user_level>1 ";
+			}
+			sql+=" ORDER BY user_level ASC";
 			pst=con.prepareStatement(sql);
 			ResultSet rs=pst.executeQuery();
 			while(rs.next()){

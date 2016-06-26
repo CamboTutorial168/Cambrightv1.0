@@ -114,16 +114,22 @@ public class EmployeeDAO {
 		ArrayList<UserDTO> list=new ArrayList<UserDTO>();
 		
 		String sql="SELECT e.emp_id,e.id_card,e.english_name,e.khmer_name,e.gender,e.dob,e.nationality,e.nation_id,e.image_url,e.hire_date,e.modify_date,e.status,e.phone_num,e.email,"
-				+ " b.branch_id,b.branch_name,po.pos_id,po.position,u.user_id,u.user_level,u.user_type,e.password"
+				+ " b.branch_id,b.branch_name,b.color,po.pos_id,po.position,u.user_id,u.user_level,u.user_type,e.password"
 				+ " FROM tb_employees e"
 				+ " JOIN tb_branches b"
 				+ " ON b.branch_id=e.branch_id"
 				+ " JOIN tb_positions po"
 				+ " ON po.pos_id=e.pos_id"
 				+ " JOIN tb_users_level u"
-				+ " ON u.user_id=e.user_id WHERE b.status='t'";
+				+ " ON u.user_id=e.user_id WHERE b.status='t' ";
 		try{
-			pst=con.prepareStatement(sql);			
+			if(user_type!=0){
+				sql+=" AND b.branch_id=?::uuid AND u.user_level <> 0 ";
+			}
+			pst=con.prepareStatement(sql);
+			if(user_type!=0){
+				pst.setString(1, branch_id);
+			}
 			ResultSet rs=pst.executeQuery();
 			while(rs.next()){
 				
@@ -144,6 +150,7 @@ public class EmployeeDAO {
 				u.setEmail(rs.getString("email"));
 				u.setBranch_id(rs.getString("branch_id"));
 				u.setBranch_name(rs.getString("branch_name"));
+				u.setB_color(rs.getString("color"));
 				u.setPos_id(rs.getString("pos_id"));
 				u.setPosition(rs.getString("position"));
 				u.setUser_id(rs.getString("user_id"));
@@ -224,7 +231,7 @@ public class EmployeeDAO {
 				+ " JOIN tb_positions po"
 				+ " ON po.pos_id=e.pos_id"
 				+ " JOIN tb_users_level u"
-				+ " ON u.user_id=e.user_id WHERE e.status='t' AND e.branch_id=?::uuid";
+				+ " ON u.user_id=e.user_id WHERE e.status='t' AND e.branch_id=?::uuid AND u.user_level <> 0";
 		try{
 			pst=con.prepareStatement(sql);
 			pst.setString(1, branch_id);

@@ -57,13 +57,18 @@ public class SubProgramDAO {
 					+ " ON sub.prog_id=pro.prog_id"
 					+ " JOIN tb_branches br"
 					+ " ON br.branch_id=pro.branch_id"
-					+ " WHERE pro.is_deleted='f' AND br.status='t' AND sub.is_deleted='f';";
+					+ " WHERE pro.is_deleted='f' AND br.status='t' AND sub.is_deleted='f'";
+			if(user_level!=0){
+				sql+=" AND br.branch_id=?::uuid";
+			}
 			pst=con.prepareStatement(sql);
+			if(user_level!=0){pst.setString(1, branch_id);}
 			ResultSet rs=pst.executeQuery();
 			while(rs.next()){
 				SubProgramListDTO l=new SubProgramListDTO();
 				l.setBranch_id(rs.getString("branch_id"));
 				l.setBranch_name(rs.getString("branch_name"));
+				l.setBranch_color(rs.getString("color"));
 				l.setSubprog_id(rs.getString("sub_prog_id"));
 				l.setSub_prog_title(rs.getString("sub_prog_title"));
 				l.setProg_id(rs.getString("prog_id"));
@@ -89,19 +94,40 @@ public class SubProgramDAO {
 	 * checked
 	 */
 	//List Sub program in specific branch
-	public ArrayList<SubProgramListDTO> listSubProgBranch(String branch_id,int user_level) throws SQLException{
+	public ArrayList<SubProgramListDTO> listSubProgBranch(String branch_id,int user_level,String emp_id) throws SQLException{
 		ArrayList<SubProgramListDTO> data=new ArrayList<>();
 		String sql="";
 		
 		try{
-			sql="SELECT br.*,sub.* FROM tb_sub_programs sub"
-					+ " JOIN tb_programs pro"
-					+ " ON sub.prog_id=pro.prog_id"
-					+ " JOIN tb_branches br"
-					+ " ON br.branch_id=pro.branch_id"
-					+ " WHERE pro.is_deleted='f' AND br.status='t' AND sub.is_deleted='f' AND br.branch_id=?::uuid;";
+			if(user_level==3){
+				sql="SELECT br.*,sub.* FROM tb_sub_programs sub"
+						+ "	JOIN tb_programs pro"
+						+ " ON sub.prog_id=pro.prog_id"
+						+ " JOIN tb_branches br"
+						+ " ON br.branch_id=pro.branch_id"
+						+ " JOIN tb_classes cl"
+						+ " ON cl.sub_prog_id=sub.sub_prog_id"
+						+ " JOIN tb_teaching te"
+						+ " ON te.class_id=cl.class_id"
+						+ " WHERE pro.is_deleted='f' AND br.status='t' AND sub.is_deleted='f' AND br.branch_id=?::uuid AND te.emp_id=?::uuid";
+			}else{
+				
+					sql="SELECT br.*,sub.* FROM tb_sub_programs sub"
+							+ " JOIN tb_programs pro"
+							+ " ON sub.prog_id=pro.prog_id"
+							+ " JOIN tb_branches br"
+							+ " ON br.branch_id=pro.branch_id"
+							+ " WHERE pro.is_deleted='f' AND br.status='t' AND sub.is_deleted='f' AND br.branch_id=?::uuid;";
+				
+				
+			}
 			pst=con.prepareStatement(sql);
+			
 			pst.setString(1, branch_id);
+			if(user_level==3){
+				pst.setString(2,emp_id);
+			}
+			
 			ResultSet rs=pst.executeQuery();
 			while(rs.next()){
 				SubProgramListDTO l=new SubProgramListDTO();

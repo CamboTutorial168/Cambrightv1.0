@@ -1,12 +1,15 @@
 
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
+<%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>	
 <!-- @author Kong Sovary -->
 <!DOCTYPE html>
 <html>
 <head>
 <title>CAMBRIGHT | Students Register</title>
-
+<c:if test="${adminsession.user_level >2 }">
+	<c:redirect url="/admin"></c:redirect>
+</c:if>
 <!-- BEGIN META -->
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -90,7 +93,7 @@ table.dataTable span.highlight {
 							<li class="active">STUDENT ENROLLMENT</li>
 						</ol>
 					</div>
-
+<c:if test="${adminsession.user_level==2 }">
 					<div class="row">
 						<div class="col-md-12">
 							<div class="card card-outlined style-accent-dark card-collapsed">
@@ -306,6 +309,7 @@ table.dataTable span.highlight {
 							<!--end .card -->
 						</div>
 					</div>
+</c:if>					
 					<!--end .row -->
 					<!-- LIST -->
 					<div class="row">
@@ -589,9 +593,9 @@ table.dataTable span.highlight {
           $('#pickerDOB').datepicker({
          	 format: 'yyyy/mm/dd',
           });
+          listStudInfo();
           listBranch();
           listLv();
-          listStudInfo();
           var image_name;
           function readURL(input) {
          	 
@@ -653,8 +657,7 @@ table.dataTable span.highlight {
         
           function listBranch(){
   			$.ajax({
-  				url:"branchlistactive.json",
-  				dataType:"json",
+  				url:"branchlistactivebranch.json",
   				type:"POST",
   				
   				beforeSend: function() {
@@ -721,7 +724,6 @@ table.dataTable span.highlight {
 	  					$("#loading").remove();
 	  				},
 	  				success:function(data){
-	  					console.log(data);
 	  					$("#list").html(listStudInfo_Supply(data));
 	  					callJTable();
 	  				},
@@ -773,8 +775,10 @@ table.dataTable span.highlight {
 										 }else{
 											 table+= "<button type='button' onClick=\"checkStatus('"+data[i].student_id+"','t')\" class='btn ink-reaction btn-floating-action btn-xs btn-danger' data-toggle='tooltip' data-placement='top' title='Status'><i class='fa fa-close'></i></button>";
 										 }
-										 table+="<span data-toggle='modal' onClick=\"view('"+data[i].id_card+"','"+data[i].en_name+"','"+data[i].kh_name+"','"+data[i].gender+"','"+data[i].dob+"','"+data[i].fa_name+"','"+data[i].ma_name+"','"+data[i].addr+"','"+data[i].img_url+"','"+data[i].reg_date+"','"+data[i].mod_date+"','"+data[i].status+"','"+data[i].phone+"','"+data[i].branch_name+"','"+data[i].reg_by+"','"+data[i].cla_num+"','"+data[i].level+"','"+data[i].teach_by+"','"+data[i].user_type+"','"+data[i].cla_num+"','"+data[i].period+"','"+data[i].subprog_title+"')\" data-target='.bs-example-modal-md' data-backdrop='static' data-keyboard='false'><button type='button' class='btn ink-reaction btn-floating-action btn-xs btn-default-dark' data-toggle='tooltip'  data-placement='top' title='View Detail'><a class='screenshot' rel='${pageContext.servletContext.contextPath }/admin/cpanel/img/stud/"+data[i].img_url+"'><i class='md md-remove-red-eye'></i></a></button></span>"+
+										 table+="<span data-toggle='modal' onClick=\"view('"+data[i].id_card+"','"+data[i].en_name+"','"+data[i].kh_name+"','"+data[i].gender+"','"+data[i].dob+"','"+data[i].fa_name+"','"+data[i].ma_name+"','"+data[i].addr+"','"+data[i].img_url+"','"+data[i].reg_date+"','"+data[i].mod_date+"','"+data[i].status+"','"+data[i].phone+"','"+data[i].branch_name+"','"+data[i].reg_by+"','"+data[i].cla_num+"','"+data[i].level+"','"+data[i].teach_by+"','"+data[i].user_type+"','"+data[i].cla_num+"','"+data[i].period+"','"+data[i].subprog_title+"')\" data-target='.bs-example-modal-md' data-backdrop='static' data-keyboard='false'><button type='button' class='btn ink-reaction btn-floating-action btn-xs btn-default-dark' data-toggle='tooltip'  data-placement='top' title='View Detail'><a class='screenshot' rel='${pageContext.servletContext.contextPath }/img/stud/"+data[i].img_url+"'><i class='md md-remove-red-eye'></i></a></button></span>"+
+										 "<c:if test='${adminsession.user_level==2 }'>"	 
 										 "<button type='button' onClick=\"edit('"+data[i].id_card+"','"+data[i].en_name+"','"+data[i].kh_name+"','"+data[i].gender+"','"+data[i].dob+"','"+data[i].fa_name+"','"+data[i].ma_name+"','"+data[i].addr+"','"+data[i].img_url+"','"+data[i].phone+"','"+data[i].password+"','"+data[i].student_id+"','"+data[i].branch_id+"','"+data[i].user_id+"')\" class='btn ink-reaction btn-floating-action btn-xs btn-warning' data-toggle='tooltip' data-placement='top' title='Edit'><i class='fa fa-edit'></i></button>"+
+										 "</c:if>"
 										"</td>"+
 									"</tr>";
 						}
@@ -958,6 +962,7 @@ table.dataTable span.highlight {
 	     var clinB=classInBranch(data);
 	     var tinB= teachInBranch(listTeaching);
 	     var cAval = classAvaliable(tinB,clinB);
+	    
        	 var list = "";
  		 var lent=cAval.length;
   			 list+="<optgroup label='Classroom'>";
@@ -975,7 +980,7 @@ table.dataTable span.highlight {
 	    	 for (var i = 0; i < len; i++) {
   				//filter class in one branch
   				if(data[i]['branch_id']==$("#branch-list").val()){
-					classId.push(data[i].class_id);
+					classId.push(data[i]);
   				}	
 	  		 }
 			 return classId;
@@ -996,19 +1001,28 @@ table.dataTable span.highlight {
 	     
 	    //Find avaliable class after filter in one branch
         function classAvaliable(tinB,clinB){
+	    	/* console.log(tinB)
+	    	console.log(clinB) */
+	    	var rs=[];
         	 var result=[];
         	 var tmp=null;
         	 for(var i=0; i<clinB.length; i++){
         		 for(var j=0; j<tinB.length; j++){
-        			 if(clinB[i] == tinB[j]['class_id']){
+        			 if(clinB[i]['class_id'] == tinB[j]['class_id']){
         			 	tmp=tinB[j];break;
         			 }else{
         				tmp=null;
         			 }
         		 }
         		 if(tmp!=null)result.push(tmp);
-        	 } 
-        	 return result;
+        	 }
+        	 for(var i=0;i<result.length;i++){
+        		 if(result[i]['sub_prog_id']==$("#select-subprog").val()){
+        			rs.push(result[i]);
+        		}	 
+        	 }
+        	
+        	 return rs;
          }
 	   
 	   	 var listTeaching;
@@ -1037,9 +1051,11 @@ table.dataTable span.highlight {
         	 listSubProg();
          });
          $("#select-subprog").on("change",function(){
-        	 getListTeaching();
+        	
+        	getListTeaching();	
         	 listClass($("#select-subprog").val());
         	 getFee();
+        	
         	 
          });
          $("#select-feetype").on("change",function(){
@@ -1177,7 +1193,7 @@ table.dataTable span.highlight {
         	 $("#phone").val(phone).change();
         	 $("#password").val(pwd).change();
         	 $("#user-id").val(user_id);
-        	 $("#image").attr("src","${pageContext.servletContext.contextPath }/admin/cpanel/img/stud/"+img_url+""); 
+        	 $("#image").attr("src","${pageContext.servletContext.contextPath }/img/stud/"+img_url+""); 
         	 $("#btn-update").val(student_id);
         	 $('#btn-create').css("display","none");
   			 $('#btn-update').css("display","inline");

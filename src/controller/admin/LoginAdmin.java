@@ -47,10 +47,12 @@ public class LoginAdmin extends HttpServlet {
 			response.setContentType("text/plain");
 			if(admin!=null){
 				HttpSession session=request.getSession();
+				session.removeAttribute("studentsession");
 				session.setAttribute("emp_id", admin.getEmp_id());
 				session.setAttribute("english_name", admin.getEng_name());
 				session.setAttribute("image_url", admin.getImg_url());
 				session.setAttribute("adminsession", admin);
+				
 				response.getWriter().write("true");
 			}else{
 				response.getWriter().write("false");

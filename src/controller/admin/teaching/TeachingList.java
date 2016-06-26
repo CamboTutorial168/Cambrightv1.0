@@ -36,8 +36,11 @@ public class TeachingList extends HttpServlet {
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		try{
-			String branch_id=((UserDTO)(request.getSession().getAttribute("adminsession"))).getBranch_id();
+			String branch_id=null;
 			int user_type=((UserDTO)(request.getSession().getAttribute("adminsession"))).getUser_level();
+			if(user_type!=0){
+				branch_id=((UserDTO)(request.getSession().getAttribute("adminsession"))).getBranch_id();
+			}
 			ArrayList<TeachDTO> t = new TeachingDAO().getListTeaching(branch_id,user_type);
 			String json = new Gson().toJson(t);
 			response.setCharacterEncoding("UTF-8");

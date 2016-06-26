@@ -1,11 +1,14 @@
 
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
+<%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>	
 <!DOCTYPE html>
 <html>
 <head>
 <title>CAMBRIGHT | Class Management</title>
-
+<c:if test="${adminsession.user_level >2 }">
+	<c:redirect url="/admin"></c:redirect>
+</c:if>
 <!-- BEGIN META -->
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -32,6 +35,8 @@
 	href="${pageContext.servletContext.contextPath }/assets/css/theme-default/libs/DataTables/jquery.dataTables.css">
 <link type="text/css" rel="stylesheet"
 	href="${pageContext.servletContext.contextPath }/assets/dist/sweetalert2.css" />
+<link type="text/css" rel="stylesheet"
+	href="${pageContext.servletContext.contextPath }/assets/css/theme-default/libs/bootstrap-colorpicker/bootstrap-colorpicker.css"/>
 
 </head>
 <body class="menubar-hoverable header-fixed ">
@@ -120,8 +125,7 @@
 								<label for="floatInput">ROOM NUMBER</label>
 							</div>
 							<div class="form-group floating-label">
-								<textarea name="textarea2" id="class_color" class="form-control"
-									rows="3"></textarea>
+								<input type="text" class="form-control" id="class_color" value="#453224" required>
 								<label for="class_color">COLOR</label>
 							</div>
 							<div class="form-footer">
@@ -171,6 +175,7 @@
 		src="${pageContext.servletContext.contextPath }/assets/js/libs/DataTables/jquery.dataTables.min.js"></script>
 	<script
 		src="${pageContext.servletContext.contextPath }/assets/dist/sweetalert2.min.js"></script>
+	<script src="${pageContext.servletContext.contextPath }/assets/js/libs/bootstrap-colorpicker/bootstrap-colorpicker.min.js"></script>
 
 	<script type="text/javascript">
          
@@ -219,7 +224,7 @@
 					table+= "<tr>"+
 								"<td><span class='badge' style='background-color:"+data[i].class_color+"'>"+data[i].class_title+"</span></td>"+
 								"<td>"+data[i].sub_prog_title+"</td>"+
-								"<td>"+data[i].branch_name+"</td>"+
+								"<td><span class='badge' style='background-color:"+data[i].branch_color+"'>"+data[i].branch_name+"</span></td>"+
 								"<td>";
 								 table+="<span data-toggle='modal' data-target='.open-modal' data-backdrop='static' data-keyboard='false'>"+
 								 			"<button type='button'  class='btn ink-reaction btn-floating-action btn-xs btn-warning' data-toggle='tooltip' data-placement='top' title='Edit' onClick=\"edit('"+data[i].class_id+"','"+data[i].class_title+"','"+data[i].class_color+"')\" ><i class='fa fa-edit'></i></button>"+
@@ -234,7 +239,7 @@
 			}
 			function listSubProg(){
 				$.ajax({
-					url:"subproglist.json",
+					url:"subproglistbranch.json",
 					dataType:"json",
 					method:"POST",
 					beforeSend: function() {
@@ -350,7 +355,7 @@
     			}
     			$(".open-modal").modal('hide');
     		});
-    			
+    		$('#class_color').colorpicker();
          </script>
 </body>
 </html>

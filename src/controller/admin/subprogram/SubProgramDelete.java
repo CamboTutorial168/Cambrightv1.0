@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import model.dao.SubProgramDAO;
+import model.dto.UserDTO;
 
 /**
  * Servlet implementation class SubProgramDelete
@@ -32,11 +33,13 @@ public class SubProgramDelete extends HttpServlet {
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		try{
+			int user_level=((UserDTO)(request.getSession().getAttribute("adminsession"))).getUser_level();
 			String subprog_id=request.getParameter("subprog_id");
 			String prog_id=request.getParameter("prog_id");
 			boolean check = false;
-			
-			check=new SubProgramDAO().deleteSubProg(subprog_id, prog_id);
+			if(user_level==0){
+				check=new SubProgramDAO().deleteSubProg(subprog_id, prog_id);
+			}
 			if(check==true){
 				response.getWriter().write("true");
 			}else{

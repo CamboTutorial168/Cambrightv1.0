@@ -44,7 +44,7 @@
 	<!-- BEGIN LOGIN SECTION -->
 	<section class="section-account">
 		<div class="img-backdrop"
-			style="background-image: url('${pageContext.servletContext.contextPath }/assets/img/cover.jpg')"></div>
+			style="background-image: url('${pageContext.servletContext.contextPath }/assets/img/admin_banner.png')"></div>
 		<div class="spacer"></div>
 		<div class="card contain-sm style-transparent">
 			<div class="card-body">
@@ -65,7 +65,7 @@
 											id="admin-password" required> <label
 											for="admin-password">Password</label>
 										<p class="help-block">
-											<a href="#">Forgotten?</a>
+											<a href="${pageContext.servletContext.contextPath }/">Log in as student?</a>
 										</p>
 									</div>
 									<br />

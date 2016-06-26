@@ -41,7 +41,7 @@ public class UploadImgStud extends HttpServlet {
 		try {
 
 			SecureRandom random = new SecureRandom();
-			final String UPLOAD_DIRECTORY = request.getServletContext().getRealPath("/admin/cpanel/img/stud/");
+			final String UPLOAD_DIRECTORY = request.getServletContext().getRealPath("/img/stud/");
 			System.out.println(UPLOAD_DIRECTORY);
 			List<FileItem> multiparts = new ServletFileUpload(new DiskFileItemFactory()).parseRequest(request);
 
@@ -56,6 +56,7 @@ public class UploadImgStud extends HttpServlet {
 
 				}
 			}
+			
 			response.setContentType("text/plain");
 			response.setCharacterEncoding("utf-8");
 			response.getWriter().write(imgname);

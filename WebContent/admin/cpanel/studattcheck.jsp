@@ -205,7 +205,7 @@
         listBranch();
 		function listBranch() {
 			$.ajax({
-				url : "branchlistactive.json",
+				url : "branchlistactivebranch.json",
 				dataType : "json",
 				type : "POST",
 				beforeSend : function() {
@@ -279,7 +279,7 @@
 					$("#loading").remove();
 				},
 				success : function(data) {
-
+					
 					$("#select-class").html(listClassSupply(data, subprog_id)).change();
 					$("#select-class").select2();
 				},
@@ -295,8 +295,12 @@
 			var cAval = classAvaliable(tinB, clinB);
 			var list = "";
 			var lent = cAval.length;
+			
 			list += "<optgroup label='Classroom'>";
 			for (var i = 0; i < lent; i++) {
+				"<c:if test='${adminsession.user_level==3}'>"
+				 if(cAval[i]['emp_id']=='${adminsession.emp_id}')
+				"</c:if>"
 				list += "<option value="+cAval[i].class_id+">"
 						+ cAval[i].class_name + "</option>";
 			}
@@ -424,26 +428,38 @@
 				}
 			}
 			getPeople(rs);
+			console.log(rs);
 		}
 		$('#ck-att').on("click",function(){
-			var attent=[];
-		
-			$("[class*='ck_']").each(function(index,obj){
-				var x = $(this).val();
-				
-				if($(this).prop('checked')==true){
-					x=x.substr(0,x.length);
-				}else{
-					x=x.substr(0,x.length-16);
-					x+="'is_absent':'a'}";
-				}
-				x=x.replace(/'/g , "\"");
-				x=JSON.parse(x);
-				attent.push(x);
-			});
+			swal({   
+   			 title: "Are you sure?",   
+  				 text: "You will not be able to recovery this action!",   
+  				 type: "warning",   
+  				 showCancelButton: true,   
+  				 confirmButtonColor: "#DD6B55",   
+  				 confirmButtonText: "Yes, I am!",   
+  				 closeOnConfirm: false 
+  	   		    }, function(){
 			
-			submitAtt(JSON.stringify(uniqueFilter(attent)));
-			//console.log(JSON.stringify(uniqueFilter(attent)));
+					var attent=[];
+				
+					$("[class*='ck_']").each(function(index,obj){
+						var x = $(this).val();
+						
+						if($(this).prop('checked')==true){
+							x=x.substr(0,x.length);
+						}else{
+							x=x.substr(0,x.length-16);
+							x+="'is_absent':'a'}";
+						}
+						x=x.replace(/'/g , "\"");
+						x=JSON.parse(x);
+						attent.push(x);
+					});
+					
+					submitAtt(JSON.stringify(uniqueFilter(attent)));
+					//console.log(JSON.stringify(uniqueFilter(attent)));
+			});
 		});
 		
 		function uniqueFilter(obj){
