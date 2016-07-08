@@ -80,7 +80,7 @@ table.dataTable span.highlight {
 <body class="menubar-hoverable header-fixed ">
 
 	<jsp:include
-		page="${pageContext.servletContext.contextPath }/../mastertop/header.jsp"></jsp:include>
+		page="/mastertop/header.jsp"></jsp:include>
 
 	<!-- BEGIN BASE-->
 	<div id="base">
@@ -93,7 +93,7 @@ table.dataTable span.highlight {
 							<li class="active">STUDENT ENROLLMENT</li>
 						</ol>
 					</div>
-<c:if test="${adminsession.user_level==2 }">
+
 					<div class="row">
 						<div class="col-md-12">
 							<div class="card card-outlined style-accent-dark card-collapsed">
@@ -188,27 +188,27 @@ table.dataTable span.highlight {
 											<div class="col-md-2">
 												<div class="form-group floating-label">
 													<input type="text" class="form-control" id="fa-name"
-														required> <label for="fa-name">FATHER
+														required> <label for="fa-name">*FATHER
 														NAME</label>
 												</div>
 											</div>
 											<div class="col-md-2">
 												<div class="form-group floating-label">
 													<input type="text" class="form-control" id="ma-name"
-														required> <label for="ma-name">MOTHER
+														required> <label for="ma-name">*MOTHER
 														NAME</label>
 												</div>
 											</div>
 											<div class="col-md-2">
 												<div class="form-group floating-label">
-													<input type="text" class="form-control" id="phone" required>
+													<input type="text" class="form-control" id="phone">
 													<label for="phone">PHONE NUMBER</label>
 												</div>
 											</div>
 											<div class="col-md-2">
 												<div class="form-group floating-label">
 													<input type="password" class="form-control" id="password"
-														required> <label for="password">PASSWORD</label>
+														required> <label for="password">*PASSWORD</label>
 												</div>
 
 											</div>
@@ -217,7 +217,7 @@ table.dataTable span.highlight {
 													<select name="branch" id="branch-list" class="form-control"
 														required>
 
-													</select> <label for="branch">BRANCH</label>
+													</select> <label for="branch">*BRANCH</label>
 												</div>
 
 											</div>
@@ -237,7 +237,7 @@ table.dataTable span.highlight {
 													<select id="user-id" class="form-control" required>
 														
 
-													</select> <label for="payment-type">USER LEVEL</label>
+													</select> <label for="payment-type">*USER LEVEL</label>
 												</div>
 											</div>
 											<div class="col-md-2">
@@ -308,8 +308,7 @@ table.dataTable span.highlight {
 							</div>
 							<!--end .card -->
 						</div>
-					</div>
-</c:if>					
+					</div>			
 					<!--end .row -->
 					<!-- LIST -->
 					<div class="row">
@@ -551,7 +550,7 @@ table.dataTable span.highlight {
 
 		<!-- BEGIN MENUBAR-->
 		<jsp:include
-			page="${pageContext.servletContext.contextPath }/../masterleft/menubar.jsp"></jsp:include>
+			page="/masterleft/menubar.jsp"></jsp:include>
 		<!-- END MENUBAR -->
 	</div>
 	<!--end #base-->
@@ -596,7 +595,7 @@ table.dataTable span.highlight {
           listStudInfo();
           listBranch();
           listLv();
-          var image_name;
+          var image_name="user.png";
           function readURL(input) {
          	 
       	    var file=$("input[type=file]")[0].files[0];
@@ -609,7 +608,6 @@ table.dataTable span.highlight {
 	  			}else{
 	  				
 	  				$("#update-img").val("");
-	  				uploadEmpImage();
 	  				if (input.files && input.files[0]) {
 	                    var reader = new FileReader();
 
@@ -621,13 +619,13 @@ table.dataTable span.highlight {
 	                    };
 
 	                    reader.readAsDataURL(input.files[0]);
-	                    
+	                    uploadStudImage();
 	                   
 	                }
 	  			}
             
           }
-          function uploadEmpImage(){
+          function uploadStudImage(){
 	  			var data1="";
 	  			data1=new FormData();
 	  			data1.append("file",$("input[type=file]")[0].files[0]);
@@ -638,7 +636,6 @@ table.dataTable span.highlight {
 	  				cache : false,
 	  				contentType : false,
 	  				processData : false,
-	  				async: false,
 	  				data : data1,
 	  				beforeSend:function(){
 	  					$("body").append("<div class='sweet-overlay' tabindex='-1' style='opacity: 1.09; display: block;width:100%; text-align:center;' id='loading'><i class='fa fa-spinner faa-spin animated' style='font-size:90px;margin-top:15%;color:black;'></i></div>");
@@ -775,11 +772,12 @@ table.dataTable span.highlight {
 										 }else{
 											 table+= "<button type='button' onClick=\"checkStatus('"+data[i].student_id+"','t')\" class='btn ink-reaction btn-floating-action btn-xs btn-danger' data-toggle='tooltip' data-placement='top' title='Status'><i class='fa fa-close'></i></button>";
 										 }
-										 table+="<span data-toggle='modal' onClick=\"view('"+data[i].id_card+"','"+data[i].en_name+"','"+data[i].kh_name+"','"+data[i].gender+"','"+data[i].dob+"','"+data[i].fa_name+"','"+data[i].ma_name+"','"+data[i].addr+"','"+data[i].img_url+"','"+data[i].reg_date+"','"+data[i].mod_date+"','"+data[i].status+"','"+data[i].phone+"','"+data[i].branch_name+"','"+data[i].reg_by+"','"+data[i].cla_num+"','"+data[i].level+"','"+data[i].teach_by+"','"+data[i].user_type+"','"+data[i].cla_num+"','"+data[i].period+"','"+data[i].subprog_title+"')\" data-target='.bs-example-modal-md' data-backdrop='static' data-keyboard='false'><button type='button' class='btn ink-reaction btn-floating-action btn-xs btn-default-dark' data-toggle='tooltip'  data-placement='top' title='View Detail'><a class='screenshot' rel='${pageContext.servletContext.contextPath }/img/stud/"+data[i].img_url+"'><i class='md md-remove-red-eye'></i></a></button></span>"+
+										 table+="<span data-toggle='modal' onClick=\"view('"+data[i].id_card+"','"+data[i].en_name+"','"+data[i].kh_name+"','"+data[i].gender+"','"+data[i].dob+"','"+data[i].fa_name+"','"+data[i].ma_name+"','"+data[i].addr+"','"+data[i].img_url+"','"+data[i].reg_date+"','"+data[i].mod_date+"','"+data[i].status+"','"+data[i].phone+"','"+data[i].branch_name+"','"+data[i].reg_by+"','"+data[i].cla_num+"','"+data[i].level+"','"+data[i].teach_by+"','"+data[i].user_type+"','"+data[i].cla_num+"','"+data[i].period+"','"+data[i].subprog_title+"')\" data-target='.bs-example-modal-md' data-backdrop='static' data-keyboard='false'><button type='button' class='btn ink-reaction btn-floating-action btn-xs btn-default-dark' data-toggle='tooltip'  data-placement='top' title='View Detail'><a class='screenshot' rel='${pageContext.servletContext.contextPath }/img/stud/"+data[i].img_url+"'><i class='md md-remove-red-eye'></i></a></button></span>";
 										 "<c:if test='${adminsession.user_level==2 }'>"	 
-										 "<button type='button' onClick=\"edit('"+data[i].id_card+"','"+data[i].en_name+"','"+data[i].kh_name+"','"+data[i].gender+"','"+data[i].dob+"','"+data[i].fa_name+"','"+data[i].ma_name+"','"+data[i].addr+"','"+data[i].img_url+"','"+data[i].phone+"','"+data[i].password+"','"+data[i].student_id+"','"+data[i].branch_id+"','"+data[i].user_id+"')\" class='btn ink-reaction btn-floating-action btn-xs btn-warning' data-toggle='tooltip' data-placement='top' title='Edit'><i class='fa fa-edit'></i></button>"+
+										 table+="<button type='button' onClick=\"edit('"+data[i].id_card+"','"+data[i].en_name+"','"+data[i].kh_name+"','"+data[i].gender+"','"+data[i].dob+"','"+data[i].fa_name+"','"+data[i].ma_name+"','"+data[i].addr+"','"+data[i].img_url+"','"+data[i].phone+"','"+data[i].password+"','"+data[i].student_id+"','"+data[i].branch_id+"','"+data[i].user_id+"')\" class='btn ink-reaction btn-floating-action btn-xs btn-warning' data-toggle='tooltip' data-placement='top' title='Edit'><i class='fa fa-edit'></i></button>";
+										 table+="<button type='button' onClick=\"deleted('"+data[i].student_id+"')\" class='btn ink-reaction btn-floating-action btn-xs btn-danger' data-toggle='tooltip' data-placement='top' title='Remove'><i class='fa fa-trash'></i></button>";
 										 "</c:if>"
-										"</td>"+
+										table+="</td>"+
 									"</tr>";
 						}
 						table+="</tbody></table>";
@@ -813,6 +811,44 @@ table.dataTable span.highlight {
                  }
  			}); 
  		 }
+         function deleted(id){
+        	 swal({   
+	  			 title: "BE CAREFUL!!",   
+ 				 text: "Are you sure to remove this record? All record relate to this will be lost",   
+ 				 type: "warning",   
+ 				 showCancelButton: true,   
+ 				 confirmButtonColor: "#DD6B55",   
+ 				 confirmButtonText: "Yes, remove it!",   
+ 				 closeOnConfirm: true,
+ 	   		    }, function(){
+
+ 	   		    $.ajax({
+ 	   				url:"stud_delete",
+ 	   				method:"POST",
+ 	   				data:{
+ 	   					student_id:id
+ 	   				},
+	 	   			beforeSend: function() {
+	 					$("body").append("<div class='sweet-overlay' tabindex='-1' style='opacity: 1.09; display: block;width:100%; text-align:center;' id='loading'><i class='fa fa-spinner faa-spin animated' style='font-size:90px;margin-top:15%;color:black;'></i></div>");
+	 			    },
+	 				complete: function(){
+	 					$("#loading").remove();
+	 				},
+ 	   				success:function(resp){
+ 	   					alertify.logPosition("bottom right");
+ 	   					if(resp=="true"){
+ 	   						alertify.success("RECORD HAS BEEN REMOVE SUCCESSFULLY !");
+ 	   						listStudInfo();
+	 	   				}else{
+	 	   					swal("FAILED","Could not operate this action","error");
+	 	   				}
+ 	   				},
+	 				error: function(jqXHR, exception) {
+	              		catchErr(jqXHR, exception);
+	                }
+ 	   			});  	
+	 	   	 });
+  		 }
          
         
          
@@ -850,6 +886,7 @@ table.dataTable span.highlight {
 	   					alertify.logPosition("bottom right");
 						if(status=="true"){
 							alertify.success("CREATE SUCCESSFULLY !");
+							
 							listStudInfo();
 	 						reset();
 	        			}else{
@@ -887,6 +924,7 @@ table.dataTable span.highlight {
          			alertify.logPosition("bottom right");
 					if(data=="true"){
 						alertify.success("UPDATED SUCCESSFULLY !");
+						
 						listStudInfo();
  						reset();
         			}else{
@@ -1094,7 +1132,7 @@ table.dataTable span.highlight {
 			 .val("");
 			 $('#btn-reset').css("display","none");
 			 $('#btn-create').css("display","inline");
-        	 $("#id-card").val("").change();
+        	// $("#id-card").val(($("#id-card").val())+1);
         	 $("#password").val("").change();
         	 $("#kh-name").val("").change();
         	 $("#en-name").val("").change();
@@ -1104,7 +1142,7 @@ table.dataTable span.highlight {
         	 $("#address").val("").change();
         	 $("#phone").val("").change();
         	 $("#ampm").prop('selectedIndex',0);
-        	 $("#discount").val("").change();
+        	 $("#discount").val(0).change();
         	 $("#total-fee").val("").change();
         	 $("#list-lv").prop('selectedIndex',0);
         	 $("#payment-type").prop('selectedIndex',0);
@@ -1135,6 +1173,7 @@ table.dataTable span.highlight {
   			}else{
   					if(($('#btn-update').val())==""){
 	  	    			createStud();
+	  	    			
 	  	 			}else{
 	  	 				updateStud();
 	  	 			}
@@ -1148,7 +1187,7 @@ table.dataTable span.highlight {
         	 $("h4.text-bold").text(id_card);
         	 $("#kh-name-view").val(kh_name);
         	 $("#eng-view").text(eng_name);
-        	 $('#img-pro').attr("src","${pageContext.servletContext.contextPath }/admin/cpanel/img/stud/"+img_url+"");
+        	 $('#img-pro').attr("src","${pageContext.servletContext.contextPath }/img/stud/"+img_url+"");
         	 $("#khm-name").text(kh_name);
         	 $("#en-name-view").val(eng_name);
         	 $("#gender").val(sex);

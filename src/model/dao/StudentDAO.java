@@ -247,7 +247,22 @@ public class StudentDAO {
 		}
 		return false;
 	}
-	
+	public boolean isDelete(String stud_id) throws SQLException{
+		String sql="DELETE FROM tb_students WHERE student_id=CAST(? AS UUID)";
+		try{
+			pst=con.prepareStatement(sql);
+			pst.setString(1, stud_id);
+			if(pst.executeUpdate()>0){
+				return true;
+			}
+		}catch(Exception e){e.printStackTrace();}
+		finally{
+			pst.close();
+			if(con !=null )
+			con.close();
+		}
+		return false;
+	}
 	public void export(String path) throws SQLException, IOException{
 		HSSFWorkbook workbook = new HSSFWorkbook();
 	    HSSFSheet sheet = workbook.createSheet("lawix10");
@@ -289,6 +304,5 @@ public class StudentDAO {
 	    fileOut.close();
 	    
 	}
-	
 	
 }

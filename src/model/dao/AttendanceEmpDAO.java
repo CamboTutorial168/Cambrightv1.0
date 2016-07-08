@@ -26,7 +26,7 @@ public class AttendanceEmpDAO {
 						+ " ON u.user_id=em.user_id"
 						+ " JOIN tb_branches b"
 						+ " ON b.branch_id=em.branch_id"
-						+ " WHERE b.branch_id=?::UUID AND b.status='t' AND em.status='t' AND u.user_level <> 0 ORDER BY u.user_level ASC";
+						+ " WHERE b.branch_id=?::UUID AND b.status='t' AND em.status='t' AND u.user_level <> 0 ORDER BY id_card ASC";
 				pst=con.prepareStatement(sql);
 				pst.setString(1, branch_id);
 				ResultSet rs=pst.executeQuery();
