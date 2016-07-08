@@ -40,8 +40,9 @@ public class PromoteList extends HttpServlet {
 			String search=request.getParameter("search");
 				ArrayList<PromotionListDTO> p=new PromoteStuDAO().getListPromote(search);
 				String json=new Gson().toJson(p);
-				request.setCharacterEncoding("UTF-8");
+				response.setCharacterEncoding("utf-8");
 				response.setContentType("application/json");
+				
 				response.getWriter().write(json);
 		}catch(Exception e){e.printStackTrace();}
 	}

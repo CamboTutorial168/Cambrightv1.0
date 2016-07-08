@@ -117,15 +117,25 @@ public class SubProgramDAO {
 							+ " ON sub.prog_id=pro.prog_id"
 							+ " JOIN tb_branches br"
 							+ " ON br.branch_id=pro.branch_id"
-							+ " WHERE pro.is_deleted='f' AND br.status='t' AND sub.is_deleted='f' AND br.branch_id=?::uuid;";
+							+ " WHERE pro.is_deleted='f' AND br.status='t' AND sub.is_deleted='f' ";
 				
 				
 			}
+			
+			if(user_level==2 || user_level==0){
+				
+				sql+=" AND br.branch_id=?::uuid";
+			}
+			sql+=" ORDER BY sub.sub_prog_title ";
 			pst=con.prepareStatement(sql);
 			
-			pst.setString(1, branch_id);
+			
 			if(user_level==3){
+				pst.setString(1, branch_id);
 				pst.setString(2,emp_id);
+			}
+			if(user_level==2 || user_level==0){
+				pst.setString(1, branch_id);
 			}
 			
 			ResultSet rs=pst.executeQuery();

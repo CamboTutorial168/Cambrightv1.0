@@ -43,7 +43,7 @@
 			<li class="gui-folder"><a>
 					<div class="gui-icon">
 						<i class="fa fa-university"></i>
-					</div> <span class="title">PROGRAM & CLASSROOM</span>
+					</div> <span class="title">PROGRAM MANAGEMENT</span>
 			</a> <!--start submenu -->
 				<ul>
 <c:if test="${adminsession.user_level==0 }">				
@@ -152,6 +152,7 @@
 <script>
 	var rootpath="${pageContext.servletContext.contextPath }";
 	var rootip="${pageContext.request.localAddr}";
+	var port="${pageContext.request.localPort}";
 </script>
 <script
 	src="${pageContext.servletContext.contextPath }/assets/js/libs/jquery/jquery-1.11.2.min.js"></script>

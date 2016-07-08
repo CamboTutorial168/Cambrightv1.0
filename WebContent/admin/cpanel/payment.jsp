@@ -38,7 +38,7 @@
 <body class="menubar-hoverable header-fixed ">
 
 	<jsp:include
-		page="${pageContext.servletContext.contextPath }/../mastertop/header.jsp"></jsp:include>
+		page="/mastertop/header.jsp"></jsp:include>
 
 	<!-- BEGIN BASE-->
 	<div id="base">
@@ -80,7 +80,7 @@
 											</div>
 											<div class="col-md-6">
 												<div class="form-group floating-label">
-													<select class='form-control select2-list' id='select-student' placeholder="SELECT STUDENT" required>
+													<select class='form-control select2-list' id='select-student' placeholder="SELECT STUDENT" title="SELECT STUDENT" required>
 													
 													</select>
 												</div>
@@ -89,14 +89,14 @@
 										<div class="row">
 											<div class="col-md-6">
 												<div class="form-group floating-label">
-													<select class='form-control select2-list' id='select-subprog' placeholder="SELECT SUB-PROGRAM" required>
+													<select class='form-control select2-list' id='select-subprog' placeholder="SELECT SUB-PROGRAM" title="SELECT SUB-PROGRAM" required>
 													
 													</select>
 												</div>
 											</div>
 											<div class="col-md-6">
 												<div class="form-group floating-label">
-													<select class='form-control select2-list' id='select-class' placeholder="SELECT CLASS" required>
+													<select class='form-control select2-list' id='select-class' placeholder="SELECT CLASS" title="SELECT CLASS" required>
 													
 													</select>
 												</div>
@@ -213,7 +213,7 @@
 
 		<!-- BEGIN MENUBAR-->
 		<jsp:include
-			page="${pageContext.servletContext.contextPath }/../masterleft/menubar.jsp"></jsp:include>
+			page="/masterleft/menubar.jsp"></jsp:include>
 		<!-- END MENUBAR -->
 	</div>
 	<!--end #base-->
@@ -254,7 +254,7 @@
         				 showCancelButton: true,   
         				 confirmButtonColor: "#DD6B55",   
         				 confirmButtonText: "Yes, I am!",   
-        				 closeOnConfirm: false 
+        				 closeOnConfirm: true 
         	   		    }, function(){   
         	   		    	$.ajax({
         	   	   				url:"payment_now",
@@ -417,8 +417,12 @@
    		 }
          
    	     function listClassSupply(data){
+   	    	 setTimeout(function(){
+   	   	    	 
+   	   	   	 },100); 
    	     var clinB=classInBranch(data);
    	     var tinB= teachInBranch(listTeaching);
+   	     if(clinB==null || tinB==null)return null;
    	     var cAval = classAvaliable(tinB,clinB);
           	 var list = "";
     		 var lent=cAval.length;
@@ -434,6 +438,7 @@
    	     //Filter class in current branch
    	     function classInBranch(data){
    	    	 var classId=[];
+   	    	if(data==null)return null;
    	    	 var len=data.length;
    	    	 for (var i = 0; i < len; i++) {
      				//filter class in one branch
@@ -447,6 +452,7 @@
    	    //Filter teaching in current branch
    	    function teachInBranch(data){
    	    	 var obj=[];
+   	    	 if(data==null)return null;
    	    	 var len=data.length;
    	    	 for (var i = 0; i < len; i++) {
      				//filter teaching in one branch

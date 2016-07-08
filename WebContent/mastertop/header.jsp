@@ -7,7 +7,11 @@
 	href="${pageContext.servletContext.contextPath }/assets/css/theme-default/font-awesome-animation.min.css">
 <link type="text/css" rel="stylesheet"
 	href="${pageContext.servletContext.contextPath }/assets/dist/sweetalert2.css" />
-
+<!--
+ @author Kong Sovary 
+ contact 098 651 956/kongsovaryhrdi@gmail.com
+ 
+-->
 <!-- BEGIN HEADER-->
 <header id="header">
 	<div class="headerbar">
@@ -44,7 +48,7 @@
 						</c:if>
 					</div>
 				</li>
-				<li class="dropdown hidden-xs"><a href="javascript:void(0);"
+				<%-- <li class="dropdown hidden-xs"><a href="javascript:void(0);"
 					class="btn btn-icon-toggle btn-default" data-toggle="dropdown">
 						<i class="md md-notifications faa-ring animated"></i><sup
 						class="badge style-danger">4</sup>
@@ -77,7 +81,7 @@
 									class="fa fa-arrow-right"></i></span>
 						</a></li>
 					</ul>
-					<!--end .dropdown-menu --></li>
+					<!--end .dropdown-menu --></li> --%>
 				<!--end .dropdown -->
 			</ul>
 			<!--end .header-nav-options -->
@@ -100,10 +104,10 @@
 									src="${pageContext.servletContext.contextPath }/assets/img/user.png"
 									alt="" />
 						</c:if>
-						<c:if test="${studentsession.branch_name!=null}">
+						<c:if test="${studentsession.kh_name!=null}">
 							<span class="profile-info"> ${studentsession.kh_name} <small>${studentsession.user_type }</small></span>
 						</c:if>
-						<c:if test="${adminsession.branch_name!=null}">
+						<c:if test="${adminsession.kh_name!=null}">
 							<span class="profile-info"> ${adminsession.kh_name} <small>${adminsession.user_type }</small></span>
 						</c:if>
 						 
@@ -111,8 +115,8 @@
 				</a>
 					<ul class="dropdown-menu animation-dock">
 						<li class="dropdown-header">Setting</li>
-						<li><a href="#"><i class="md md-location-history"></i> My
-								History</a></li>
+						<!-- <li><a href="#"><i class="md md-location-history"></i> My
+								History</a></li> -->
 						<li class="divider"></li>
 						<li><a href="#" data-toggle="modal" data-target="#formModal"><i
 								class="fa fa-fw fa-lock"></i> Change password</a></li>
