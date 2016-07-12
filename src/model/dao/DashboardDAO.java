@@ -187,7 +187,7 @@ public class DashboardDAO {
 		ArrayList<String> data=new ArrayList<>();
 		String sql="SELECT SUM(total) total,TO_CHAR(date_paid,'YYYY,MM') as month_ofyear FROM tb_payment"
 				+ " WHERE (SELECT EXTRACT(year FROM date_paid))=(SELECT EXTRACT(year FROM NOW()::DATE))"
-				+ " GROUP BY month_ofyear ORDER BY month_ofyear ASC ";
+				+ " GROUP BY month_ofyear ";
 		try{
 			
 			pst=con.prepareStatement(sql);
@@ -295,7 +295,7 @@ public class DashboardDAO {
 	//END ADMIN SESSION
 	//TEACHER SESSION
 	public String getClassRoom(String branch_id,int user_type,String emp_id) throws SQLException{
-		String classroom="[]";
+		String classroom="Need Assign";
 		String sql="SELECT cl.class_title,"
 				+ "	(SELECT count(st.study_id) FROM tb_studying st WHERE st.teach_id In (te.teach_id) GROUP BY te.teach_id) as num_of_student "
 				+ " FROM tb_employees e"

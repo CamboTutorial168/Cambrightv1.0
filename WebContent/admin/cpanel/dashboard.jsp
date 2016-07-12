@@ -52,7 +52,8 @@
 </head>
 <body class="menubar-hoverable header-fixed ">
 
-	<jsp:include page="/mastertop/header.jsp"></jsp:include>
+	<jsp:include
+		page="${pageContext.servletContext.contextPath }/../mastertop/header.jsp"></jsp:include>
 
 	<!-- BEGIN BASE-->
 	<div id="base">
@@ -306,7 +307,7 @@
 
 		<!-- BEGIN MENUBAR-->
 		<jsp:include
-			page="/masterleft/menubar.jsp"></jsp:include>
+			page="${pageContext.servletContext.contextPath }/../masterleft/menubar.jsp"></jsp:include>
 		<!-- END MENUBAR -->
 	</div>
 	<!--end #base-->
@@ -388,16 +389,15 @@ function drawChart() {
       var data = new google.visualization.DataTable();
       data.addColumn('date', 'X');
       data.addColumn('number', 'Income');
-	  var json=${chartLine}
-      data.addRows(json);
+	 // var json=${chartLine}
+      data.addRows([[new Date(2016,06),345],[new Date(2016,07),445]]);
 
       var options = {
         hAxis: {
           title: 'Month'
         },
         vAxis: {
-          title: 'Number of Income',
-          format:'currency'
+          title: 'Number of Income'
         },
         backgroundColor: '#f0f8e9'
       };

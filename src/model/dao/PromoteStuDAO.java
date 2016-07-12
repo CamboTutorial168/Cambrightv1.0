@@ -83,7 +83,7 @@ public class PromoteStuDAO {
 	
 	public ArrayList<PromotionListDTO> getListPromote(String search) throws SQLException{
 		
-		ArrayList<PromotionListDTO> pr=new ArrayList<>();
+		ArrayList<PromotionListDTO> pr=new ArrayList<PromotionListDTO>();
 		String sql="";
 		try{
 			

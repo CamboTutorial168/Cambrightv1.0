@@ -39,7 +39,7 @@
 <body class="menubar-hoverable header-fixed ">
 
 	<jsp:include
-		page="/mastertop/header.jsp"></jsp:include>
+		page="${pageContext.servletContext.contextPath }/../mastertop/header.jsp"></jsp:include>
 
 	<!-- BEGIN BASE-->
 	<div id="base">
@@ -118,19 +118,17 @@
 
 		<!-- BEGIN MENUBAR-->
 		<jsp:include
-			page="/masterleft/menubar.jsp"></jsp:include>
+			page="${pageContext.servletContext.contextPath }/../masterleft/menubar.jsp"></jsp:include>
 		<!-- END MENUBAR -->
 	</div>
 	<!--end #base-->
 	<!-- END BASE -->
 
 	<!-- MAIN SCRIPT -->
-	
 	<script
 		src="${pageContext.servletContext.contextPath }/assets/js/core/source/App.js"></script>
 	<script
 		src="${pageContext.servletContext.contextPath }/assets/js/core/source/AppNavigation.js"></script>
-	
 	<script
 		src="${pageContext.servletContext.contextPath }/assets/js/core/source/AppForm.js"></script>
 	<!-- END MAIN SCRIPT  -->
@@ -143,7 +141,6 @@
 
 	<script
 		src="${pageContext.servletContext.contextPath }/assets/dist/sweetalert2.min.js"></script>
-	
 	<script type="text/javascript">
          $("#addposition").addClass("active");
          $('#table1').DataTable();
@@ -292,24 +289,21 @@
  			//$(".open-modal").modal('hide');
  		});
          
-    </script>
-    
-    <script>   
-        	$.ajax({
-     			url: $('#position').data('source'),
-     			success: function (pos) {
-     				$("#position").autocomplete({
-     					source: function (request, response) {
-     						var results = $.ui.autocomplete.filter(pos, request.term);
-     						response(results.slice(0, 10));
-     					}
-     				});
-     			},
-              	error: function(jqXHR, exception) {
-              		catchErr(jqXHR, exception);
-                }
-     		});
-       
+         $.ajax({
+ 			url: $('#position').data('source'),
+ 			
+ 			success: function (pos) {
+ 				$("#position").autocomplete({
+ 					source: function (request, response) {
+ 						var results = $.ui.autocomplete.filter(pos, request.term);
+ 						response(results.slice(0, 10));
+ 					}
+ 				});
+ 			},
+          	error: function(jqXHR, exception) {
+          		catchErr(jqXHR, exception);
+            }
+ 		});
          </script>
 </body>
 </html>

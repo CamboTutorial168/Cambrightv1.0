@@ -1,5 +1,5 @@
 	
-var websocket=new WebSocket("ws://"+rootip+":"+port+rootpath+"/socket"); //ws://localhost:8080/ProjectName/annotation.  @ServerEndpoint("/chating")
+var websocket=new WebSocket("ws://"+rootip+":8080/CamBrightv1.0/socket"); //ws://localhost:8080/ProjectName/annotation.  @ServerEndpoint("/chating")
 	var inter;
      websocket.onopen=function(message){
     	/* console.log("open:");
@@ -23,9 +23,9 @@ var websocket=new WebSocket("ws://"+rootip+":"+port+rootpath+"/socket"); //ws://
     		});
     	 }
     	 
-    	 /*setInterval(function(){
+    	 setInterval(function(){
     		 location.reload();
-    	 },5000);*/
+    	 },5000);
     	 
     	 
     	/* console.log(message);

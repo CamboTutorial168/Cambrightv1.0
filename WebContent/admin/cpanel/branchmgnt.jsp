@@ -39,7 +39,7 @@
 </head>
 <body class="menubar-hoverable header-fixed ">
 
-	<c:import url="/mastertop/header.jsp"></c:import>
+	<c:import url="${pageContext.servletContext.contextPath }/../mastertop/header.jsp"></c:import>
 	
 	<!-- BEGIN BASE-->
 	<div id="base">
@@ -128,7 +128,7 @@
 
 		<!-- BEGIN MENUBAR-->
 		<jsp:include
-			page="/masterleft/menubar.jsp"></jsp:include>
+			page="${pageContext.servletContext.contextPath }/../masterleft/menubar.jsp"></jsp:include>
 		<!-- END MENUBAR -->
 	</div>
 	<!--end #base-->
