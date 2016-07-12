@@ -42,7 +42,7 @@
 <body class="menubar-hoverable header-fixed ">
 
 	<jsp:include
-		page="/mastertop/header.jsp"></jsp:include>
+		page="${pageContext.servletContext.contextPath }/../mastertop/header.jsp"></jsp:include>
 
 	<!-- BEGIN BASE-->
 	<div id="base">
@@ -125,7 +125,7 @@
 
 		<!-- BEGIN MENUBAR-->
 		<jsp:include
-			page="/masterleft/menubar.jsp"></jsp:include>
+			page="${pageContext.servletContext.contextPath }/../masterleft/menubar.jsp"></jsp:include>
 		<!-- END MENUBAR -->
 	</div>
 	<!--end #base-->
@@ -355,7 +355,7 @@
  					$("#loading").remove();
  				},
  				success:function(data){
- 					console.log(data);
+ 					
  					$("#select-subprog").html(subProgList_Supply(data)).change();
  					$("#select-subprog").select2();
  				},
@@ -458,10 +458,8 @@
 	               	success:function(data){
 	               		alertify.logPosition("bottom right");
 						if(data=="true"){
-							getListTeaching();
-							getEmpList();
 							alertify.success("ASSIGN SUCCESSFULLY !");
-							
+							listBranch();
 							reset();
 						}else{
 							swal('FAILED','Assign task failure','error');
@@ -549,7 +547,6 @@
          $("#fm-level").submit(function(e){
  			e.preventDefault();
  				assignTask();
- 				
  		 });
          
          $('.card-head .tools .btn-refresh').on('click', function (e) {

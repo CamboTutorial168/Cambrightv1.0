@@ -25,7 +25,7 @@
 	</head>
 	<body class="menubar-hoverable header-fixed ">
 		
-		<jsp:include page="/mastertop/header.jsp"></jsp:include>
+		<jsp:include page="${pageContext.servletContext.contextPath }/../mastertop/header.jsp"></jsp:include>
 
 		<!-- BEGIN BASE-->
 		<div id="base">
@@ -64,7 +64,7 @@
 			<!-- END CONTENT -->
 
 			<!-- BEGIN MENUBAR-->
-			<jsp:include page="/masterleft/menubar.jsp"></jsp:include>
+			<jsp:include page="${pageContext.servletContext.contextPath }/../masterleft/menubar.jsp"></jsp:include>
 			<!-- END MENUBAR -->
 		</div><!--end #base-->
 		<!-- END BASE -->

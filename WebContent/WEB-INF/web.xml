@@ -410,14 +410,6 @@
     <url-pattern>/admin/cpanel/stud_update</url-pattern>
   </servlet-mapping>
   <servlet>
-    <servlet-name>StudDelete</servlet-name>
-    <servlet-class>controller.admin.student.StudDelete</servlet-class>
-  </servlet>
-  <servlet-mapping>
-    <servlet-name>StudDelete</servlet-name>
-    <url-pattern>/admin/cpanel/stud_delete</url-pattern>
-  </servlet-mapping>
-  <servlet>
     <servlet-name>StudStatus</servlet-name>
     <servlet-class>controller.admin.student.StudStatus</servlet-class>
   </servlet>

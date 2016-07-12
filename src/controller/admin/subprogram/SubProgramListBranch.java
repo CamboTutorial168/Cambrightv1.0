@@ -37,7 +37,6 @@ public class SubProgramListBranch extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		try{
 			String branch_id=request.getParameter("branch_id");
-			System.out.println(branch_id);
 			int user_level=((UserDTO)(request.getSession().getAttribute("adminsession"))).getUser_level();
 			String emp_id=((UserDTO)(request.getSession().getAttribute("adminsession"))).getEmp_id();
 			if(user_level!=0){

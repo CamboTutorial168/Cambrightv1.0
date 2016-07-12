@@ -38,7 +38,7 @@ public class PaymentSearchList extends HttpServlet {
 			String search=request.getParameter("search");
 			ArrayList<PaymentSearchListDTO> p=new PaymentDAO().getPaymentSearch(search);
 				String json=new Gson().toJson(p);
-				response.setCharacterEncoding("UTF-8");
+				request.setCharacterEncoding("UTF-8");
 				response.setContentType("application/json");
 				response.getWriter().write(json);
 		}catch(Exception e){e.printStackTrace();}

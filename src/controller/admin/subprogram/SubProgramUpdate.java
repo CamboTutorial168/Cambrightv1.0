@@ -48,7 +48,7 @@ public class SubProgramUpdate extends HttpServlet {
 			
 			boolean check = false;
 			if(user_level==0){
-				check=new SubProgramDAO().updateSubProgram(prog);
+				new SubProgramDAO().updateSubProgram(prog);
 			}
 			response.setContentType("text/plain");
 			response.setCharacterEncoding("UTF-8");

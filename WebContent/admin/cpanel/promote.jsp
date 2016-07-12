@@ -38,7 +38,7 @@
 <body class="menubar-hoverable header-fixed ">
 
 	<jsp:include
-		page="/mastertop/header.jsp"></jsp:include>
+		page="${pageContext.servletContext.contextPath }/../mastertop/header.jsp"></jsp:include>
 
 	<!-- BEGIN BASE-->
 	<div id="base">
@@ -208,7 +208,7 @@
 
 		<!-- BEGIN MENUBAR-->
 		<jsp:include
-			page="/masterleft/menubar.jsp"></jsp:include>
+			page="${pageContext.servletContext.contextPath }/../masterleft/menubar.jsp"></jsp:include>
 		<!-- END MENUBAR -->
 	</div>
 	<!--end #base-->
@@ -249,7 +249,7 @@
        				 showCancelButton: true,   
        				 confirmButtonColor: "#DD6B55",   
        				 confirmButtonText: "Yes, I am!",   
-       				 closeOnConfirm: true
+       				 closeOnConfirm: false
        	   		    }, function(){
 	       	   		  $.ajax({
 	     	   				url:"promote_class",
@@ -527,7 +527,6 @@
             		$http({
                 		url:"promotelist.json",
                 		method:"POST",
-                		header : {'Content-Type' : 'application/json; charset=UTF-8'},
                 		params:{
                 			search:$("#id-card").val()
                 		}
@@ -539,7 +538,7 @@
                 		}else{
                 			$scope.items=resp.data;
                 		}
-                		console.log(resp.data);
+                		
                 	});
             	}
             	
@@ -553,7 +552,6 @@
             
             function reset(){
 	   	         $("#select-subprog").select2("val","").change();
-	   	      	 $("#select-student").select2("val","").change();
 	   	         $("#discount").val();
 	   	         $("#total").val();
             }

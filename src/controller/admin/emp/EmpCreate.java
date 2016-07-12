@@ -43,7 +43,7 @@ public class EmpCreate extends HttpServlet {
 			u.setPhone(request.getParameter("phone"));
 			u.setPos_id(request.getParameter("pos_id"));
 			u.setUser_id(request.getParameter("user_id"));
-			u.setEmail(request.getParameter("email").toLowerCase());
+			u.setEmail(request.getParameter("email"));
 			u.setPwd(request.getParameter("password"));
 			u.setImg_url(request.getParameter("img_url"));
 			u.setBranch_id(request.getParameter("branch_id"));

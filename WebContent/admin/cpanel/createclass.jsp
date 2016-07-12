@@ -37,16 +37,12 @@
 	href="${pageContext.servletContext.contextPath }/assets/dist/sweetalert2.css" />
 <link type="text/css" rel="stylesheet"
 	href="${pageContext.servletContext.contextPath }/assets/css/theme-default/libs/bootstrap-colorpicker/bootstrap-colorpicker.css"/>
-<style>
-.colorpicker{
-  z-index: 9999;
-}
-</style>
+
 </head>
 <body class="menubar-hoverable header-fixed ">
 
 	<jsp:include
-		page="/mastertop/header.jsp"></jsp:include>
+		page="${pageContext.servletContext.contextPath }/../mastertop/header.jsp"></jsp:include>
 
 	<!-- BEGIN BASE-->
 	<div id="base">
@@ -95,7 +91,7 @@
 
 		<!-- BEGIN MENUBAR-->
 		<jsp:include
-			page="/masterleft/menubar.jsp"></jsp:include>
+			page="${pageContext.servletContext.contextPath }/../masterleft/menubar.jsp"></jsp:include>
 		<!-- END MENUBAR -->
 	</div>
 	<!--end #base-->
@@ -119,11 +115,6 @@
 					<!--end .card-head -->
 					<div class="card-body">
 						<form class="form" id="fm-prog">
-							<div class="form-group floating-label">
-								<select class="form-control" id="listbranch">
-
-								</select> <label for="listbranch">BRANCH​</label>
-							</div>
 							<div class="form-group floating-label">
 								<select class="form-control list-subprog">
 
@@ -193,7 +184,7 @@
          $('[data-toggle="tooltip"]').tooltip();
          tableClass();
          //In form
-         listBranch();
+         listSubProg();
     		//LIST TABLE CLASS
     		function tableClass(){
 				$.ajax({
@@ -246,43 +237,19 @@
 					return "<span class='text-danger'>NO RECORD FOUND</span>";
 				return table;
 			}
-			function listBranch() {
-	 			$.ajax({
-	 				url : "branchlistactivebranch.json",
-	 				dataType:"json",
-	 				type : "POST",
-	 				success : function(data) {
-	 					console.log(data)
-	 					$("#listbranch").html(listBranch_Supply(data)).change();
-	 				},
-	 				error: function(jqXHR, exception) {
-	 	          		catchErr(jqXHR, exception);
-	 	            }
-	 			});
-	 		}
-	 		function listBranch_Supply(data) {
-	 			var list = "";
-	 			 var len=data.length;
-	 			for (var i = 0; i < len; i++) {
-	 				list += "<option value="+data[i].branch_id+">"
-	 						+ data[i].branch_name + "</option>";
-	 			}
-	 			return list;
-	 		}
 			function listSubProg(){
 				$.ajax({
 					url:"subproglistbranch.json",
-					data:{
-						branch_id:$("#listbranch").val()
-					},
+					dataType:"json",
 					method:"POST",
 					beforeSend: function() {
-						$("body").append("<div class='sweet-overlay' tabindex='-1' style='z-index:100;opacity: 1.09; display: block;width:100%; text-align:center;' id='loading'><i class='fa fa-spinner faa-spin animated' style='font-size:90px;margin-top:15%;color:black;'></i></div>");
+						$("body").append("<div class='sweet-overlay' tabindex='-1' style='opacity: 1.09; display: block;width:100%; text-align:center;' id='loading'><i class='fa fa-spinner faa-spin animated' style='font-size:90px;margin-top:15%;color:black;'></i></div>");
 				    },
 					complete: function(){
 						$("#loading").remove();
 					},
 					success:function(data){
+						
 						$(".list-subprog").html(subProgList_Supply(data)).change();
 					},
 					error: function(jqXHR, exception) {
@@ -293,7 +260,9 @@
 			function subProgList_Supply(data){
 				var list="";
 				for(var i=0;i<data.length;i++){
+					list+="<optgroup label='"+data[i].branch_name+"'>";
 					list +="<option value="+data[i].subprog_id+">"+data[i].sub_prog_title+"</option>";
+					list+="</optgroup>";
 				}
 				return list;
 			}
@@ -375,9 +344,7 @@
     			
     			
     		}
-    		$("#listbranch").on("change",function(){
-    			listSubProg();
-    		});
+    		
     		$("#fm-prog").submit(function(e){
     			e.preventDefault();
     			if(($('#btn-update').val())==""){

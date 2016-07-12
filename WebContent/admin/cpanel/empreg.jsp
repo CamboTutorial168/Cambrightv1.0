@@ -87,7 +87,7 @@ img.preview {
 <body class="menubar-hoverable header-fixed ">
 
 	<jsp:include
-		page="/mastertop/header.jsp"></jsp:include>
+		page="${pageContext.servletContext.contextPath }/../mastertop/header.jsp"></jsp:include>
 
 	<!-- BEGIN BASE-->
 	<div id="base">
@@ -183,27 +183,27 @@ img.preview {
 											<div class="col-md-2">
 												<div class="form-group floating-label">
 													<input type="text" class="form-control" id="nation"
-														required> <label for="nation">*NATIONALITY</label>
+														required> <label for="nation">NATIONALITY</label>
 												</div>
 											</div>
 											<div class="col-md-3">
 												<div class="form-group floating-label">
 													<input type="text" class="form-control" id="nation-id"
-														> <label for="nation-id">NATIONAL
+														required> <label for="nation-id">NATIONAL
 														ID</label>
 												</div>
 											</div>
 											<div class="col-md-3">
 												<div class="form-group floating-label">
 													<input type="text" class="form-control" id="phone" required>
-													<label for="phone">*PHONE NUMBER</label>
+													<label for="phone">PHONE NUMBER</label>
 												</div>
 											</div>
 											<div class="col-md-2">
 												<div class="form-group floating-label">
 													<select class="form-control branch-list" required>
 
-													</select> <label for="branch">*BRANCH</label>
+													</select> <label for="branch">BRANCH</label>
 												</div>
 											</div>
 										</div>
@@ -213,7 +213,7 @@ img.preview {
 												<div class="form-group floating-label">
 													<select id="position" class="form-control" required>
 
-													</select> <label for="position">*POSITION</label>
+													</select> <label for="position">POSITION</label>
 												</div>
 											</div>
 
@@ -222,19 +222,19 @@ img.preview {
 													<select class="form-control list-ulv" class="form-control"
 														required>
 
-													</select> <label>*USER LEVEL</label>
+													</select> <label>USER LEVEL</label>
 												</div>
 											</div>
 											<div class="col-md-4">
 												<div class="form-group floating-label">
 													<input type="email" class="form-control" id="email"
-														required> <label for="email">*EMAIL</label>
+														required> <label for="email">EMAIL</label>
 												</div>
 											</div>
 											<div class="col-md-3">
 												<div class="form-group floating-label">
 													<input type="password" class="form-control" id="pwd"
-														required> <label for="pwd">*PASSWORD</label>
+														required> <label for="pwd">PASSWORD</label>
 												</div>
 											</div>
 
@@ -470,7 +470,7 @@ img.preview {
 
 		<!-- BEGIN MENUBAR-->
 		<jsp:include
-			page="/masterleft/menubar.jsp"></jsp:include>
+			page="${pageContext.servletContext.contextPath }/../masterleft/menubar.jsp"></jsp:include>
 		<!-- END MENUBAR -->
 	</div>
 	<!--end #base-->
@@ -511,7 +511,7 @@ img.preview {
          $('#pickerDOB').datepicker({
         	 format: 'yyyy/mm/dd',
          });
-          var image_name="user.png";
+          var image_name;
           getEmpList();
           listBranch();
           listPosition();
@@ -529,10 +529,10 @@ img.preview {
 	  			}else{
 	  				
 	  				$("#update-img").val("");
-	  				
+	  				uploadEmpImage();
 	  				if (input.files && input.files[0]) {
 	                    var reader = new FileReader();
-	                    
+
 	                    reader.onload = function (e) {
 	                        $('#image')
 	                            .attr('src', e.target.result)
@@ -541,7 +541,8 @@ img.preview {
 	                    };
 
 	                    reader.readAsDataURL(input.files[0]);
-	                    uploadEmpImage();
+	                    
+	                   
 	                }
 	  			}
               
@@ -564,9 +565,8 @@ img.preview {
   		
   		 function listLv_Supply(data){
   			var list="";
-  			
-  			for(var i=0;i<data.length;i++){
-  				if(data[i]['user_level']!=4)
+  			list +="<option value="+data[0].user_id+" selected>"+data[0].user_type+"</option>";
+  			for(var i=1;i<data.length;i++){
   				list +="<option value="+data[i].user_id+">"+data[i].user_type+"</option>";
   			}
   			return list;
@@ -660,7 +660,6 @@ img.preview {
         		success:function(data){
         			alertify.logPosition("bottom right");
  					if(data=="true"){
- 						
  						alertify.success("UPDATED SUCCESSFULLY !");
  						getEmpList();
  						reset();
@@ -712,6 +711,7 @@ img.preview {
 	       	 $("#email").val("").change().attr("disabled",false);
 	       	 $("#pwd").val("").change();
 	       	 $("#update-img").val("");
+	       	 image_name="";
        		 $("#image").attr("src","${pageContext.servletContext.contextPath }/assets/img/user.png");
 			
 		}
@@ -724,10 +724,10 @@ img.preview {
 			$.ajax({
 				url:"upload_img_emp",
 				type:"POST",
-				//cache : false,
+				cache : false,
 				contentType : false,
 				processData : false,
-				//async: false,
+				async: false,
 				data : data1,
 				beforeSend:function(){
 					$("body").append("<div class='sweet-overlay' tabindex='-1' style='opacity: 1.09; display: block;width:100%; text-align:center;' id='loading'><i class='fa fa-spinner faa-spin animated' style='font-size:90px;margin-top:15%;color:black;'></i></div>");
@@ -775,12 +775,11 @@ img.preview {
         			img_url:image_name
         		},
         		success:function(status){
-        			
+        			alert(status);
         			alertify.logPosition("bottom right");
 					if(status=="true"){
 						alertify.success("CREATE SUCCESSFULLY !");
  						getEmpList();
- 						
  						reset();
         			}else{
 						swal("FALIED","Unable to create check if duplicate ID card or email invalid!","error");
